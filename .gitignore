@@ -1,0 +1,57 @@
+# Entorno virtual
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+db.sqlite3
+media/
+
+# Variables de entorno
+.env
+
+# Archivos estáticos compilados
+staticfiles/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.swp
+*.swo
+
+# Coverage y testing
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Migraciones opcionales
+# */migrations/
+# !*/migrations/__init__.py
+
+# Archivos de build
+build/
+dist/
+
+# Node modules (si usan frontend adicional)
+node_modules/
+
+# Archivos de despliegue
+*.pem
+
+# Logs
+logs/
+*.log
