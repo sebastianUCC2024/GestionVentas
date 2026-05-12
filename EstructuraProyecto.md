@@ -1,3 +1,5 @@
+#Estructura del Proyecto
+
 ```bash
 GestionVentas/
 │
