@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --dark: #0f172a;
+        --gray: #64748b;
+        --light: #f8fafc;
+        --white: #ffffff;
+        --green: #16a34a;
+        --red: #dc2626;
+        --orange: #f59e0b;
+        --border: #e2e8f0;
+        --shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .clientes-page {
+        padding: 30px;
+        background: linear-gradient(135deg, #f8fafc, #eef2ff);
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    .header-card {
+        background: linear-gradient(135deg, #0f172a, #1e3a8a);
+        color: white;
+        padding: 35px;
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .header-card h1 {
+        margin: 0;
+        font-size: 34px;
+    }
+
+    .header-card p {
+        margin-top: 8px;
+        color: #dbeafe;
+    }
+
+    .btn-primary {
+        background: white;
+        color: var(--primary-dark);
+        padding: 13px 22px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255,255,255,0.25);
+    }
+
+    .filters-card, .table-card {
+        background: white;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        margin-bottom: 25px;
+    }
+
+    .filters {
+        display: grid;
+        grid-template-columns: 2fr 1fr auto auto;
+        gap: 15px;
+    }
+
+    input, select {
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        outline: none;
+        font-size: 15px;
+    }
+
+    input:focus, select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .btn-dark, .btn-clear {
+        border: none;
+        padding: 14px 18px;
+        border-radius: 14px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-dark {
+        background: var(--dark);
+        color: white;
+    }
+
+    .btn-clear {
+        background: #e2e8f0;
+        color: var(--dark);
+        text-decoration: none;
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        text-align: left;
+        padding: 16px;
+        color: var(--gray);
+        font-size: 13px;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+    }
+
+    td {
+        padding: 18px 16px;
+        border-bottom: 1px solid var(--border);
+        color: var(--dark);
+    }
+
+    tr {
+        transition: 0.2s;
+    }
+
+    tr:hover {
+        background: #f8fafc;
+    }
+
+    .client-name {
+        font-weight: bold;
+        color: var(--dark);
+    }
+
+    .badge {
+        padding: 7px 13px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .activo {
+        background: #dcfce7;
+        color: var(--green);
+    }
+
+    .inactivo {
+        background: #e2e8f0;
+        color: var(--gray);
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 8px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .view {
+        background: #dbeafe;
+        color: var(--primary-dark);
+    }
+
+    .edit {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .delete {
+        background: #fee2e2;
+        color: var(--red);
+    }
+
+    .empty {
+        text-align: center;
+        padding: 40px;
+        color: var(--gray);
+    }
+
+    .alert {
+        background: #dcfce7;
+        color: #166534;
+        padding: 16px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    @media (max-width: 900px) {
+        .header-card, .filters {
+            grid-template-columns: 1fr;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        table {
+            min-width: 850px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+    }
+</style>
+
+<div class="clientes-page">
+    <div class="header-card">
+        <div>
+            <h1>Clientes</h1>
+            <p>Administra, filtra y consulta tus clientes registrados.</p>
+        </div>
+
+        <a href="{% url 'cliente_create' %}" class="btn-primary">Nuevo Cliente</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="filters-card">
+        <form method="get" class="filters">
+            <input 
+                type="text" 
+                name="q" 
+                id="searchInput"
+                placeholder="Buscar por nombre, documento o correo"
+                value="{{ query|default:'' }}"
+            >
+
+            <select name="estado">
+                <option value="">Todos los estados</option>
+                <option value="activo" {% if estado == 'activo' %}selected{% endif %}>Activo</option>
+                <option value="inactivo" {% if estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+            </select>
+
+            <button type="submit" class="btn-dark">Filtrar</button>
+            <a href="{% url 'cliente_list' %}" class="btn-clear">Limpiar</a>
+        </form>
+    </div>
+
+    <div class="table-card">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Documento</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th>Vendedor</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td class="client-name">{{ cliente.nombre }}</td>
+                        <td>{{ cliente.documento }}</td>
+                        <td>{{ cliente.correo }}</td>
+                        <td>{{ cliente.telefono }}</td>
+                        <td>
+                            <span class="badge {{ cliente.estado }}">
+                                {{ cliente.estado|title }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if cliente.vendedor %}
+                                {{ cliente.vendedor.username }}
+                            {% else %}
+                                Sin asignar
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a href="{% url 'cliente_detail' cliente.id %}" class="action-btn view">Ver</a>
+                                <a href="{% url 'cliente_update' cliente.id %}" class="action-btn edit">Editar</a>
+                                <a href="{% url 'cliente_delete' cliente.id %}" class="action-btn delete">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty">No hay clientes registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const searchInput = document.getElementById("searchInput");
+
+    if (searchInput) {
+        searchInput.addEventListener("keyup", function () {
+            this.style.borderColor = this.value.length > 0 ? "#2563eb" : "#e2e8f0";
+        });
+    }
+</script>
+{% endblock %}
