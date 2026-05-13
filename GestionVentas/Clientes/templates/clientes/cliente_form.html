@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #2563eb;
+        --dark: #0f172a;
+        --gray: #64748b;
+        --border: #e2e8f0;
+        --white: #ffffff;
+        --danger: #dc2626;
+        --shadow: 0 20px 45px rgba(15, 23, 42, 0.1);
+    }
+
+    .form-page {
+        min-height: 100vh;
+        padding: 35px;
+        background: linear-gradient(135deg, #eef2ff, #f8fafc);
+        font-family: Arial, sans-serif;
+    }
+
+    .form-container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #0f172a, #2563eb);
+        color: white;
+        padding: 35px;
+        border-radius: 26px 26px 0 0;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 32px;
+    }
+
+    .form-header p {
+        margin-top: 8px;
+        color: #dbeafe;
+    }
+
+    .form-card {
+        background: white;
+        padding: 35px;
+        border-radius: 0 0 26px 26px;
+        box-shadow: var(--shadow);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+    }
+
+    .field-box label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--dark);
+        font-weight: bold;
+    }
+
+    .field-box input,
+    .field-box select,
+    .field-box textarea {
+        width: 100%;
+        padding: 15px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        outline: none;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition: 0.3s;
+        background: #f8fafc;
+    }
+
+    .field-box input:focus,
+    .field-box select:focus,
+    .field-box textarea:focus {
+        background: white;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .error {
+        color: var(--danger);
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .actions {
+        margin-top: 35px;
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .btn {
+        padding: 14px 24px;
+        border-radius: 14px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+
+    .btn-save {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        background: #e2e8f0;
+        color: var(--dark);
+    }
+
+    .progress-box {
+        margin-bottom: 25px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        color: var(--gray);
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .progress-bar {
+        height: 10px;
+        background: #e2e8f0;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #2563eb, #22c55e);
+        transition: 0.3s;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="form-page">
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Formulario de Cliente</h1>
+            <p>Registra o actualiza la información comercial del cliente.</p>
+        </div>
+
+        <div class="form-card">
+            <div class="progress-box">
+                <div class="progress-label">
+                    <span>Completado del formulario</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <form method="post" id="clienteForm">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    {% for field in form %}
+                    <div class="field-box">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+
+                        {% if field.errors %}
+                        <div class="error">
+                            {{ field.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="actions">
+                    <a href="{% url 'cliente_list' %}" class="btn btn-cancel">Cancelar</a>
+                    <button type="submit" class="btn btn-save">Guardar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById("clienteForm");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+
+    function updateProgress() {
+        const fields = form.querySelectorAll("input, select, textarea");
+        let filled = 0;
+
+        fields.forEach(field => {
+            if (field.type !== "hidden" && field.value.trim() !== "") {
+                filled++;
+            }
+        });
+
+        const total = Array.from(fields).filter(field => field.type !== "hidden").length;
+        const percent = total > 0 ? Math.round((filled / total) * 100) : 0;
+
+        progressFill.style.width = percent + "%";
+        progressText.textContent = percent + "%";
+    }
+
+    form.querySelectorAll("input, select, textarea").forEach(field => {
+        field.addEventListener("input", updateProgress);
+        field.addEventListener("change", updateProgress);
+    });
+
+    updateProgress();
+</script>
+{% endblock %}
