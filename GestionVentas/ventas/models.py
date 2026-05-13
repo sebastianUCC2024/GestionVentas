@@ -1,9 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
-from Clientes.models import Cliente
+from django.conf import settings
+from clientes.models import Cliente
 
 
 class OportunidadVenta(models.Model):
+
     ESTADO_CHOICES = [
         ('nueva', 'Nueva'),
         ('en_proceso', 'En proceso'),
@@ -16,24 +17,45 @@ class OportunidadVenta(models.Model):
         on_delete=models.CASCADE,
         related_name='oportunidades'
     )
+
     vendedor = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='ventas'
     )
+
     titulo = models.CharField(max_length=150)
-    descripcion = models.TextField(blank=True, null=True)
-    monto = models.DecimalField(max_digits=12, decimal_places=2)
+
+    descripcion = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    monto = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
     estado = models.CharField(
         max_length=20,
         choices=ESTADO_CHOICES,
         default='nueva'
     )
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    fecha_cierre_estimada = models.DateField(blank=True, null=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    fecha_cierre_estimada = models.DateField(
+        blank=True,
+        null=True
+    )
+
+    fecha_actualizacion = models.DateTimeField(
+        auto_now=True
+    )
 
     class Meta:
         ordering = ['-fecha_creacion']
@@ -45,6 +67,7 @@ class OportunidadVenta(models.Model):
 
 
 class Seguimiento(models.Model):
+
     TIPO_CONTACTO_CHOICES = [
         ('llamada', 'Llamada'),
         ('correo', 'Correo'),
@@ -58,24 +81,36 @@ class Seguimiento(models.Model):
         on_delete=models.CASCADE,
         related_name='seguimientos'
     )
+
     cliente = models.ForeignKey(
         Cliente,
         on_delete=models.CASCADE,
         related_name='seguimientos'
     )
+
     usuario = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         blank=True
     )
+
     tipo_contacto = models.CharField(
         max_length=20,
         choices=TIPO_CONTACTO_CHOICES
     )
+
     observaciones = models.TextField()
-    fecha_contacto = models.DateTimeField(auto_now_add=True)
-    proximo_contacto = models.DateField(blank=True, null=True)
+
+    fecha_contacto = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    proximo_contacto = models.DateField(
+        blank=True,
+        null=True
+    )
+
     completado = models.BooleanField(default=False)
 
     class Meta:
