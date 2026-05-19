@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body{font-family:Arial;background:linear-gradient(135deg,#f8fafc,#eef2ff);}
+    .page{padding:40px;}
+    .hero{background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:38px;border-radius:28px;box-shadow:0 20px 45px rgba(15,23,42,.1);}
+    .hero h1{margin:0;font-size:36px;}
+    .hero p{color:#dbeafe;}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:30px 0;}
+    .card{background:white;padding:28px;border-radius:24px;box-shadow:0 20px 45px rgba(15,23,42,.08);}
+    .card span{color:#64748b;font-size:14px;}
+    .card h2{font-size:34px;margin:10px 0;color:#0f172a;}
+    .charts{display:grid;grid-template-columns:1fr 1fr;gap:25px;}
+    .chart-card{background:white;padding:30px;border-radius:24px;box-shadow:0 20px 45px rgba(15,23,42,.08);}
+    .chart-card h2{margin-top:0;color:#0f172a;}
+    .bar-box{display:flex;flex-direction:column;gap:16px;margin-top:25px;}
+    .bar-item span{display:flex;justify-content:space-between;margin-bottom:8px;font-weight:bold;color:#0f172a;}
+    .bar{height:16px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+    .fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#2563eb,#22c55e);transition:1s;}
+    .legend{display:grid;gap:12px;margin-top:25px;}
+    .legend-item{display:flex;justify-content:space-between;padding:14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;}
+    @media(max-width:900px){.cards,.charts{grid-template-columns:1fr}}
+</style>
+
+<div class="page">
+    <div class="hero">
+        <h1>Dashboard de Ventas</h1>
+        <p>Indicadores principales del módulo comercial</p>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <span>Total oportunidades</span>
+            <h2>{{ total_oportunidades }}</h2>
+        </div>
+
+        <div class="card">
+            <span>Total monto ganado</span>
+            <h2>${{ total_monto_ganado }}</h2>
+        </div>
+
+        <div class="card">
+            <span>Total seguimientos</span>
+            <h2>{{ total_seguimientos }}</h2>
+        </div>
+    </div>
+
+    <div class="charts">
+        <div class="chart-card">
+            <h2>Oportunidades por estado</h2>
+
+            <div class="bar-box">
+                {% for item in ventas_por_estado %}
+                <div class="bar-item">
+                    <span>
+                        <small>{{ item.estado|title }}</small>
+                        <small>{{ item.total }}</small>
+                    </span>
+
+                    <div class="bar">
+                        <div class="fill" data-value="{{ item.total }}"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No hay datos disponibles.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>Resumen comercial</h2>
+
+            <div class="legend">
+                {% for item in ventas_por_estado %}
+                <div class="legend-item">
+                    <strong>{{ item.estado|title }}</strong>
+                    <span>{{ item.total }} registros</span>
+                </div>
+                {% empty %}
+                <p>No hay información para mostrar.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fills = document.querySelectorAll(".fill");
+    let maxValue = 1;
+
+    fills.forEach(fill => {
+        const value = parseInt(fill.dataset.value);
+        if(value > maxValue) maxValue = value;
+    });
+
+    fills.forEach(fill => {
+        const value = parseInt(fill.dataset.value);
+        const percent = Math.max((value / maxValue) * 100, 8);
+
+        setTimeout(() => {
+            fill.style.width = percent + "%";
+        }, 300);
+    });
+
+    document.querySelectorAll(".card").forEach((card, index) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+
+        setTimeout(() => {
+            card.style.transition = ".4s";
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+        }, index * 120);
+    });
+</script>
+{% endblock %}
