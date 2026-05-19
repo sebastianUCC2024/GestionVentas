@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body{font-family:Arial;background:linear-gradient(135deg,#eef2ff,#f8fafc);}
+    .page{padding:40px;}
+    .card{max-width:1000px;margin:auto;background:white;border-radius:28px;overflow:hidden;box-shadow:0 20px 45px rgba(15,23,42,.08);}
+    .header{background:linear-gradient(135deg,#0f172a,#4338ca);color:white;padding:35px;}
+    .header h1{margin:0;font-size:34px;}
+    .body{padding:35px;}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+    .field{display:flex;flex-direction:column;}
+    .field label{margin-bottom:10px;font-weight:bold;color:#0f172a;}
+    .field input,.field textarea,.field select{padding:15px;border-radius:14px;border:1px solid #e2e8f0;outline:none;font-size:15px;transition:.3s;}
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:#4338ca;box-shadow:0 0 0 4px rgba(67,56,202,.12);}
+    .field textarea{resize:vertical;}
+    .error{color:#dc2626;font-size:13px;margin-top:6px;}
+    .actions{margin-top:35px;display:flex;justify-content:space-between;}
+    .btn{padding:14px 22px;border-radius:14px;text-decoration:none;border:none;cursor:pointer;font-weight:bold;}
+    .save{background:#4338ca;color:white;}
+    .cancel{background:#e2e8f0;color:#0f172a;}
+    .progress{margin-bottom:25px;}
+    .progress-top{display:flex;justify-content:space-between;color:#64748b;margin-bottom:8px;font-size:14px;}
+    .bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+    .fill{height:100%;width:0;background:linear-gradient(90deg,#4338ca,#22c55e);transition:.3s;}
+    @media(max-width:800px){.grid{grid-template-columns:1fr}.actions{flex-direction:column;gap:12px}}
+</style>
+
+<div class="page">
+    <div class="card">
+        <div class="header">
+            <h1>Formulario de Seguimiento</h1>
+            <p>Registra contactos, notas y próximas acciones con el cliente.</p>
+        </div>
+
+        <div class="body">
+            <div class="progress">
+                <div class="progress-top">
+                    <span>Completado del formulario</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="bar">
+                    <div class="fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <form method="post" id="seguimientoForm">
+                {% csrf_token %}
+
+                <div class="grid">
+                    {% for field in form %}
+                    <div class="field">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="actions">
+                    <a href="{% url 'seguimiento_list' %}" class="btn cancel">Cancelar</a>
+                    <button type="submit" class="btn save">Guardar seguimiento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById("seguimientoForm");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+
+    function updateProgress(){
+        const fields = form.querySelectorAll("input, select, textarea");
+        let total = 0;
+        let filled = 0;
+
+        fields.forEach(field => {
+            if(field.type !== "hidden" && field.type !== "checkbox"){
+                total++;
+                if(field.value.trim() !== "") filled++;
+            }
+
+            if(field.type === "checkbox"){
+                total++;
+                if(field.checked) filled++;
+            }
+        });
+
+        const percent = total > 0 ? Math.round((filled / total) * 100) : 0;
+        progressFill.style.width = percent + "%";
+        progressText.textContent = percent + "%";
+    }
+
+    form.querySelectorAll("input, select, textarea").forEach(field => {
+        field.addEventListener("input", updateProgress);
+        field.addEventListener("change", updateProgress);
+    });
+
+    updateProgress();
+</script>
+{% endblock %}
