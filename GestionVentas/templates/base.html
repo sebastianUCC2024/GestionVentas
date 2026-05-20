@@ -6,205 +6,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --dark: #0f172a;
-            --dark-soft: #1e293b;
-            --gray: #64748b;
-            --light: #f8fafc;
-            --white: #ffffff;
-            --border: #e2e8f0;
-            --green: #16a34a;
-            --red: #dc2626;
-            --orange: #f59e0b;
-            --shadow: 0 20px 45px rgba(15, 23, 42, 0.10);
+
+        :root{
+            --primary:#2563eb;
+            --primary-dark:#1d4ed8;
+            --dark:#0f172a;
+            --dark-soft:#1e293b;
+            --gray:#64748b;
+            --light:#f8fafc;
+            --white:#ffffff;
+            --border:#e2e8f0;
+            --green:#16a34a;
+            --red:#dc2626;
+            --shadow:0 20px 45px rgba(15,23,42,.10);
         }
 
-        * {
-            box-sizing: border-box;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
         }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f8fafc;
-            color: var(--dark);
+        body{
+            font-family:Arial,sans-serif;
+            background:#f1f5f9;
+            color:var(--dark);
         }
 
-        .layout {
-            display: grid;
-            grid-template-columns: 270px 1fr;
-            min-height: 100vh;
+        .layout{
+            display:grid;
+            grid-template-columns:280px 1fr;
+            min-height:100vh;
         }
 
-        .sidebar {
-            background: linear-gradient(180deg, #0f172a, #1e293b);
-            color: white;
-            padding: 24px;
-            position: sticky;
-            top: 0;
-            height: 100vh;
+        /* SIDEBAR */
+
+        .sidebar{
+            background:linear-gradient(180deg,#0f172a,#1e293b);
+            color:white;
+            padding:28px 22px;
+            position:sticky;
+            top:0;
+            height:100vh;
+            overflow:auto;
         }
 
-        .brand {
-            margin-bottom: 35px;
+        .logo{
+            margin-bottom:40px;
         }
 
-        .brand h2 {
-            margin: 0;
-            font-size: 24px;
+        .logo h1{
+            font-size:30px;
+            margin-bottom:8px;
         }
 
-        .brand p {
-            margin: 6px 0 0;
-            color: #cbd5e1;
-            font-size: 14px;
+        .logo p{
+            color:#cbd5e1;
+            font-size:14px;
         }
 
-        .menu {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .menu{
+            display:flex;
+            flex-direction:column;
+            gap:12px;
         }
 
-        .menu a {
-            color: #e2e8f0;
-            text-decoration: none;
-            padding: 14px 16px;
-            border-radius: 14px;
-            font-weight: bold;
-            transition: 0.3s;
+        .menu a{
+            text-decoration:none;
+            color:#e2e8f0;
+            padding:15px 18px;
+            border-radius:16px;
+            transition:.3s;
+            font-weight:bold;
+            display:flex;
+            align-items:center;
+            gap:12px;
         }
 
-        .menu a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(5px);
+        .menu a:hover{
+            background:rgba(255,255,255,.10);
+            transform:translateX(4px);
         }
 
-        .menu a.active {
-            background: var(--primary);
-            color: white;
+        .menu a.active{
+            background:linear-gradient(135deg,var(--primary),var(--primary-dark));
         }
 
-        .main {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
+        .logout-form{
+            margin-top:20px;
         }
 
-        .topbar {
-            height: 75px;
-            background: white;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+        .logout-btn{
+            width:100%;
+            border:none;
+            padding:15px 18px;
+            border-radius:16px;
+            background:#dc2626;
+            color:white;
+            font-weight:bold;
+            cursor:pointer;
+            font-size:15px;
+            transition:.3s;
         }
 
-        .topbar-title h1 {
-            margin: 0;
-            font-size: 22px;
+        .logout-btn:hover{
+            background:#b91c1c;
+            transform:translateY(-2px);
         }
 
-        .topbar-title span {
-            color: var(--gray);
-            font-size: 14px;
+        /* MAIN */
+
+        .main{
+            display:flex;
+            flex-direction:column;
         }
 
-        .user-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .topbar{
+            background:white;
+            height:80px;
+            padding:0 35px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:1px solid var(--border);
+            position:sticky;
+            top:0;
+            z-index:100;
         }
 
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #22c55e);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+        .topbar h2{
+            font-size:28px;
+            color:var(--dark);
         }
 
-        .user-info {
-            font-size: 14px;
+        .topbar p{
+            color:var(--gray);
+            margin-top:4px;
+            font-size:14px;
         }
 
-        .user-info strong {
-            display: block;
+        .user-box{
+            display:flex;
+            align-items:center;
+            gap:14px;
         }
 
-        .user-info span {
-            color: var(--gray);
+        .avatar{
+            width:48px;
+            height:48px;
+            border-radius:50%;
+            background:linear-gradient(135deg,var(--primary),#22c55e);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:white;
+            font-weight:bold;
+            font-size:18px;
         }
 
-        .content {
-            flex: 1;
+        .user-info strong{
+            display:block;
         }
 
-        .messages {
-            padding: 20px 30px 0;
+        .user-info span{
+            color:var(--gray);
+            font-size:13px;
         }
 
-        .message {
-            background: #dcfce7;
-            color: #166534;
-            padding: 14px 18px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            font-weight: bold;
-            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+        /* CONTENT */
+
+        .content{
+            padding:35px;
+            flex:1;
         }
 
-        .mobile-menu-btn {
-            display: none;
-            border: none;
-            background: var(--primary);
-            color: white;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
+        /* MESSAGES */
+
+        .messages{
+            margin-bottom:25px;
         }
 
-        @media (max-width: 900px) {
-            .layout {
-                grid-template-columns: 1fr;
+        .message{
+            padding:16px 20px;
+            border-radius:16px;
+            margin-bottom:12px;
+            font-weight:bold;
+            box-shadow:0 10px 25px rgba(15,23,42,.06);
+        }
+
+        .success{
+            background:#dcfce7;
+            color:#166534;
+        }
+
+        .error{
+            background:#fee2e2;
+            color:#991b1b;
+        }
+
+        /* MOBILE */
+
+        .menu-toggle{
+            display:none;
+            border:none;
+            background:var(--primary);
+            color:white;
+            padding:10px 16px;
+            border-radius:12px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        @media(max-width:950px){
+
+            .layout{
+                grid-template-columns:1fr;
             }
 
-            .sidebar {
-                display: none;
-                position: fixed;
-                z-index: 20;
-                width: 270px;
-                left: 0;
-                top: 0;
+            .sidebar{
+                position:fixed;
+                left:-100%;
+                width:280px;
+                transition:.3s;
+                z-index:999;
             }
 
-            .sidebar.show {
-                display: block;
+            .sidebar.show{
+                left:0;
             }
 
-            .mobile-menu-btn {
-                display: block;
+            .menu-toggle{
+                display:block;
             }
 
-            .topbar {
-                padding: 0 18px;
+            .topbar{
+                padding:0 20px;
             }
 
-            .user-info {
-                display: none;
+            .content{
+                padding:20px;
             }
+
         }
+
     </style>
 </head>
 
@@ -212,101 +256,192 @@
 
 <div class="layout">
 
+    <!-- SIDEBAR -->
+
     <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <h2>GestionVentas</h2>
-            <p>CRM de ventas y clientes</p>
+
+        <div class="logo">
+            <h1>GestionVentas</h1>
+            <p>CRM Comercial Inteligente</p>
         </div>
 
         <nav class="menu">
-            <a href="{% url 'cliente_list' %}">Clientes</a>
-            <a href="{% url 'venta_list' %}">Ventas</a>
-            <a href="{% url 'seguimiento_list' %}">Seguimientos</a>
-            <a href="{% url 'ventas_dashboard' %}">Dashboard</a>
-            <a href="/admin/">Admin</a>
 
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}">Cerrar sesión</a>
-            {% else %}
-                <a href="{% url 'login' %}">Iniciar sesión</a>
-            {% endif %}
+            <a href="{% url 'cliente_list' %}">
+                Clientes
+            </a>
+
+            <a href="{% url 'venta_list' %}">
+                Ventas
+            </a>
+
+            <a href="{% url 'seguimiento_list' %}">
+                Seguimientos
+            </a>
+
+            <a href="{% url 'ventas_dashboard' %}">
+                Dashboard
+            </a>
+
+            <a href="/admin/">
+                Administración
+            </a>
+
         </nav>
+
+        {% if user.is_authenticated %}
+
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+            class="logout-form"
+        >
+
+            {% csrf_token %}
+
+            <button type="submit" class="logout-btn">
+                Cerrar sesión
+            </button>
+
+        </form>
+
+        {% endif %}
+
     </aside>
 
-    <main class="main">
-        <header class="topbar">
-            <button class="mobile-menu-btn" onclick="toggleSidebar()">Menú</button>
+    <!-- MAIN -->
 
-            <div class="topbar-title">
-                <h1>Panel de Gestión</h1>
-                <span>Administración comercial del sistema</span>
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <button
+                    class="menu-toggle"
+                    onclick="toggleSidebar()"
+                >
+                    Menú
+                </button>
+
+                <h2>Panel de Gestión</h2>
+                <p>Sistema CRM de clientes y ventas</p>
+
             </div>
 
             <div class="user-box">
-                <div class="user-avatar">
+
+                <div class="avatar">
+
                     {% if user.is_authenticated %}
                         {{ user.username|slice:":1"|upper }}
                     {% else %}
                         G
                     {% endif %}
+
                 </div>
 
                 <div class="user-info">
+
                     {% if user.is_authenticated %}
+
                         <strong>{{ user.username }}</strong>
-                        <span>Usuario activo</span>
+
+                        <span>
+                            {{ user.rol }}
+                        </span>
+
                     {% else %}
+
                         <strong>Invitado</strong>
-                        <span>No autenticado</span>
+
                     {% endif %}
+
                 </div>
+
             </div>
+
         </header>
 
-        {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+        <!-- CONTENT -->
 
         <section class="content">
+
+            {% if messages %}
+
+                <div class="messages">
+
+                    {% for message in messages %}
+
+                        <div class="message success">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
             {% block content %}
             {% endblock %}
+
         </section>
+
     </main>
 
 </div>
 
 <script>
-    function toggleSidebar() {
+
+    function toggleSidebar(){
+
         const sidebar = document.getElementById("sidebar");
+
         sidebar.classList.toggle("show");
+
     }
 
+    // MENÚ ACTIVO
+
     const currentPath = window.location.pathname;
+
     const links = document.querySelectorAll(".menu a");
 
     links.forEach(link => {
-        if (link.getAttribute("href") === currentPath) {
+
+        if(link.getAttribute("href") === currentPath){
+
             link.classList.add("active");
+
         }
+
     });
 
+    // AUTO HIDE MESSAGES
+
     setTimeout(() => {
-        document.querySelectorAll(".message").forEach(message => {
-            message.style.transition = "0.4s";
+
+        const messages = document.querySelectorAll(".message");
+
+        messages.forEach(message => {
+
+            message.style.transition = ".4s";
             message.style.opacity = "0";
             message.style.transform = "translateY(-10px)";
 
             setTimeout(() => {
+
                 message.remove();
-            }, 400);
+
+            },400);
+
         });
-    }, 3500);
+
+    },3500);
+
 </script>
 
 </body>
