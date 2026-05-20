@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sesión cerrada | GestionVentas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .card {
+            max-width: 520px;
+            width: 100%;
+            background: white;
+            padding: 45px;
+            border-radius: 28px;
+            box-shadow: 0 25px 60px rgba(15,23,42,.22);
+            text-align: center;
+        }
+
+        .icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            font-weight: bold;
+            margin: auto;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 32px;
+        }
+
+        p {
+            color: #64748b;
+            line-height: 1.6;
+            margin: 15px 0 28px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 15px 24px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="icon">✓</div>
+
+    <h1>Sesión cerrada</h1>
+
+    <p>
+        Has cerrado sesión correctamente. Puedes volver a ingresar cuando lo necesites.
+    </p>
+
+    <a href="{% url 'login' %}" class="btn">
+        Volver a iniciar sesión
+    </a>
+</div>
+
+<script>
+    setTimeout(() => {
+        window.location.href = "{% url 'login' %}";
+    }, 3500);
+</script>
+
+</body>
+</html>
