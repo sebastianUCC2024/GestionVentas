@@ -4,7 +4,6 @@ from clientes.models import Cliente
 
 
 class OportunidadVenta(models.Model):
-
     ESTADO_CHOICES = [
         ('nueva', 'Nueva'),
         ('en_proceso', 'En proceso'),
@@ -27,16 +26,8 @@ class OportunidadVenta(models.Model):
     )
 
     titulo = models.CharField(max_length=150)
-
-    descripcion = models.TextField(
-        blank=True,
-        null=True
-    )
-
-    monto = models.DecimalField(
-        max_digits=12,
-        decimal_places=2
-    )
+    descripcion = models.TextField(blank=True, null=True)
+    monto = models.DecimalField(max_digits=12, decimal_places=2)
 
     estado = models.CharField(
         max_length=20,
@@ -44,18 +35,9 @@ class OportunidadVenta(models.Model):
         default='nueva'
     )
 
-    fecha_creacion = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    fecha_cierre_estimada = models.DateField(
-        blank=True,
-        null=True
-    )
-
-    fecha_actualizacion = models.DateTimeField(
-        auto_now=True
-    )
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_cierre_estimada = models.DateField(blank=True, null=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-fecha_creacion']
@@ -67,7 +49,6 @@ class OportunidadVenta(models.Model):
 
 
 class Seguimiento(models.Model):
-
     TIPO_CONTACTO_CHOICES = [
         ('llamada', 'Llamada'),
         ('correo', 'Correo'),
@@ -92,7 +73,8 @@ class Seguimiento(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
+        related_name='seguimientos'
     )
 
     tipo_contacto = models.CharField(
@@ -101,16 +83,8 @@ class Seguimiento(models.Model):
     )
 
     observaciones = models.TextField()
-
-    fecha_contacto = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    proximo_contacto = models.DateField(
-        blank=True,
-        null=True
-    )
-
+    fecha_contacto = models.DateTimeField(auto_now_add=True)
+    proximo_contacto = models.DateField(blank=True, null=True)
     completado = models.BooleanField(default=False)
 
     class Meta:
@@ -119,4 +93,4 @@ class Seguimiento(models.Model):
         verbose_name_plural = 'Seguimientos'
 
     def __str__(self):
-        return f'{self.tipo_contacto} - {self.cliente.nombre}'
+        return f'{self.get_tipo_contacto_display()} - {self.cliente.nombre}'

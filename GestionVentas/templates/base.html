@@ -2,8 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>GestionVentas</title>
+    <title>GestionVentas CRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
 
@@ -268,23 +271,23 @@
         <nav class="menu">
 
             <a href="{% url 'cliente_list' %}">
-                Clientes
+                <i class="bi bi-people-fill"></i> Clientes
             </a>
 
             <a href="{% url 'venta_list' %}">
-                Ventas
+                <i class="bi bi-cart-check-fill"></i> Ventas
             </a>
 
             <a href="{% url 'seguimiento_list' %}">
-                Seguimientos
+                <i class="bi bi-telephone-fill"></i> Seguimientos
             </a>
 
             <a href="{% url 'ventas_dashboard' %}">
-                Dashboard
+                <i class="bi bi-graph-up-arrow"></i> Dashboard
             </a>
 
             <a href="/admin/">
-                Administración
+                <i class="bi bi-gear-fill"></i> Administración
             </a>
 
         </nav>
@@ -300,7 +303,7 @@
             {% csrf_token %}
 
             <button type="submit" class="logout-btn">
-                Cerrar sesión
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
             </button>
 
         </form>

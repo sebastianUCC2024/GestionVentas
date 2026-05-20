@@ -2,65 +2,53 @@
 
 {% block content %}
 <style>
-    body{font-family:Arial;background:linear-gradient(135deg,#fff1f2,#f8fafc);}
-    .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:35px;}
-    .card{max-width:650px;width:100%;background:white;border-radius:28px;box-shadow:0 20px 45px rgba(15,23,42,.12);overflow:hidden;}
-    .header{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:white;text-align:center;padding:35px;}
-    .icon{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:auto;font-size:42px;font-weight:bold;}
-    .body{padding:35px;}
-    .summary{background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:20px;margin-bottom:25px;}
-    .summary strong{font-size:20px;color:#0f172a;}
-    .summary span{display:block;color:#64748b;margin-top:8px;}
-    .check{display:flex;gap:10px;align-items:center;margin-bottom:25px;color:#0f172a;font-weight:bold;}
-    .actions{display:flex;justify-content:space-between;gap:15px;}
-    .btn{padding:15px 24px;border-radius:14px;border:none;text-decoration:none;font-weight:bold;cursor:pointer;}
-    .cancel{background:#e2e8f0;color:#0f172a;}
-    .delete{background:#dc2626;color:white;}
-    .delete:disabled{opacity:.5;cursor:not-allowed;}
-    @media(max-width:600px){.actions{flex-direction:column}}
+    .delete-card{max-width:650px;margin:40px auto;background:white;border-radius:28px;box-shadow:0 20px 45px rgba(15,23,42,.12);overflow:hidden}
+    .delete-header{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:white;text-align:center;padding:36px}
+    .delete-header h1{font-size:32px;margin-bottom:8px}
+    .delete-body{padding:34px}
+    .summary{background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:22px;margin-bottom:24px}
+    .summary strong{font-size:20px;color:#0f172a}
+    .summary span{display:block;color:#64748b;margin-top:8px}
+    .check{display:flex;gap:10px;font-weight:bold;margin-bottom:24px}
+    .actions{display:flex;justify-content:space-between;gap:14px}
+    .btn{border:none;padding:14px 22px;border-radius:14px;text-decoration:none;font-weight:bold;cursor:pointer}
+    .cancel{background:#e2e8f0;color:#0f172a}
+    .delete{background:#dc2626;color:white}
+    .delete:disabled{opacity:.5;cursor:not-allowed}
 </style>
 
-<div class="page">
-    <div class="card">
-        <div class="header">
-            <div class="icon">!</div>
-            <h1>Eliminar seguimiento</h1>
-            <p>Esta acción no se puede deshacer.</p>
+<div class="delete-card">
+    <div class="delete-header">
+        <h1>Eliminar seguimiento</h1>
+        <p>Esta acción no se puede deshacer.</p>
+    </div>
+
+    <div class="delete-body">
+        <div class="summary">
+            <strong>{{ seguimiento.cliente.nombre }}</strong>
+            <span>Oportunidad: {{ seguimiento.oportunidad.titulo }}</span>
+            <span>Tipo: {{ seguimiento.get_tipo_contacto_display }}</span>
+            <span>Fecha: {{ seguimiento.fecha_contacto|date:"d/m/Y H:i" }}</span>
         </div>
 
-        <div class="body">
-            <div class="summary">
-                <strong>{{ seguimiento.cliente.nombre }}</strong>
-                <span>Oportunidad: {{ seguimiento.oportunidad.titulo }}</span>
-                <span>Tipo: {{ seguimiento.get_tipo_contacto_display }}</span>
-                <span>Fecha: {{ seguimiento.fecha_contacto|date:"d/m/Y H:i" }}</span>
+        <form method="post">
+            {% csrf_token %}
+            <label class="check">
+                <input type="checkbox" id="confirmDelete">
+                Confirmo que deseo eliminar este seguimiento.
+            </label>
+
+            <div class="actions">
+                <a href="{% url 'seguimiento_list' %}" class="btn cancel">Cancelar</a>
+                <button type="submit" class="btn delete" id="deleteBtn" disabled>Eliminar definitivamente</button>
             </div>
-
-            <form method="post">
-                {% csrf_token %}
-
-                <label class="check">
-                    <input type="checkbox" id="confirmDelete">
-                    Confirmo que deseo eliminar este seguimiento.
-                </label>
-
-                <div class="actions">
-                    <a href="{% url 'seguimiento_list' %}" class="btn cancel">Cancelar</a>
-                    <button type="submit" class="btn delete" id="deleteBtn" disabled>
-                        Eliminar definitivamente
-                    </button>
-                </div>
-            </form>
-        </div>
+        </form>
     </div>
 </div>
 
 <script>
     const check = document.getElementById("confirmDelete");
     const btn = document.getElementById("deleteBtn");
-
-    check.addEventListener("change", () => {
-        btn.disabled = !check.checked;
-    });
+    check.addEventListener("change", () => btn.disabled = !check.checked);
 </script>
 {% endblock %}
