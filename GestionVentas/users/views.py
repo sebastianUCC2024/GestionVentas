@@ -30,7 +30,7 @@ class UserLoginView(DjangoLoginView):
 
 class UserLogoutView(DjangoLogoutView):
 
-    template_name = 'users/logout.html'
+    next_page = reverse_lazy('login')
 
 
 class ClienteRegisterView(CreateView):
