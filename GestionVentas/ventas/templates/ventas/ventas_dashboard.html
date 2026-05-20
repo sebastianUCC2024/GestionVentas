@@ -1,344 +1,300 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-<div class="content-container">
-    
-    <!-- Header con botones de exportación -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-        <div>
-            <h1 style="font-size: 2rem; color: #0f172a; margin-bottom: 0.5rem;">
-                <i class="bi bi-graph-up-arrow"></i> Dashboard Comercial
-            </h1>
-            <p style="color: #64748b;">Análisis en tiempo real del CRM con gráficos interactivos</p>
-        </div>
-        
-        <div class="export-buttons">
-            <a href="{% url 'exportar_ventas_pdf' %}" class="btn-export" title="Descargar reporte de ventas en PDF">
-                <i class="bi bi-file-earmark-pdf"></i>
-                <span>Exportar PDF</span>
-            </a>
-            <a href="{% url 'exportar_ventas_excel' %}" class="btn-export" title="Descargar reporte de ventas en Excel">
-                <i class="bi bi-file-earmark-excel"></i>
-                <span>Exportar Excel</span>
-            </a>
-            <a href="{% url 'exportar_clientes_pdf' %}" class="btn-export" title="Descargar reporte de clientes en PDF">
-                <i class="bi bi-people"></i>
-                <span>Clientes PDF</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- KPIs Cards -->
-    <div class="kpi-grid">
-        <div class="kpi-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div class="kpi-title">
-                        <i class="bi bi-people-fill"></i> Total Clientes
-                    </div>
-                    <div class="kpi-value" data-target="{{ total_clientes }}">0</div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="bi bi-people"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="kpi-card info">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div class="kpi-title">
-                        <i class="bi bi-cart-check-fill"></i> Total Ventas
-                    </div>
-                    <div class="kpi-value" data-target="{{ total_ventas }}">0</div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="bi bi-cart-check"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="kpi-card success">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div class="kpi-title">
-                        <i class="bi bi-trophy-fill"></i> Ventas Ganadas
-                    </div>
-                    <div class="kpi-value" data-target="{{ ventas_ganadas }}">0</div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="bi bi-trophy"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="kpi-card warning">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div class="kpi-title">
-                        <i class="bi bi-currency-dollar"></i> Ingresos Totales
-                    </div>
-                    <div class="kpi-value">${{ total_ingresos|floatformat:0 }}</div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="bi bi-cash-stack"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Gráficos principales -->
-    <div class="charts-grid">
-        
-        <!-- Gráfico de Ventas por Mes -->
-        <div class="chart-card fade-in">
-            <h3><i class="bi bi-graph-up"></i> Ventas por Mes</h3>
-            <div class="chart-container">
-                <canvas id="ventasMesChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Gráfico de Ventas por Estado -->
-        <div class="chart-card fade-in">
-            <h3><i class="bi bi-pie-chart"></i> Ventas por Estado</h3>
-            <div class="chart-container">
-                <canvas id="ventasEstadoChart"></canvas>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Segunda fila de gráficos -->
-    <div class="charts-grid">
-        
-        <!-- Gráfico de Top Clientes -->
-        <div class="chart-card fade-in">
-            <h3><i class="bi bi-star-fill"></i> Top 5 Clientes</h3>
-            <div class="chart-container">
-                <canvas id="topClientesChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Gráfico de Ingresos Mensuales -->
-        <div class="chart-card fade-in">
-            <h3><i class="bi bi-cash-coin"></i> Ingresos Mensuales</h3>
-            <div class="chart-container">
-                <canvas id="ingresosMesChart"></canvas>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Indicadores adicionales -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-        
-        <div class="card">
-            <div class="card-header">
-                <i class="bi bi-clipboard-data"></i> Indicadores de Clientes
-            </div>
-            <div class="card-body">
-                <table class="table">
-                    <tr>
-                        <td><i class="bi bi-check-circle-fill" style="color: #1cc88a;"></i> Clientes Activos</td>
-                        <td><strong>{{ clientes_activos }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td><i class="bi bi-x-circle-fill" style="color: #e74a3b;"></i> Clientes Inactivos</td>
-                        <td><strong>{{ clientes_inactivos }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td><i class="bi bi-telephone-fill" style="color: #36b9cc;"></i> Seguimientos</td>
-                        <td><strong>{{ seguimientos }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td><i class="bi bi-x-octagon-fill" style="color: #e74a3b;"></i> Ventas Perdidas</td>
-                        <td><strong>{{ ventas_perdidas }}</strong></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <i class="bi bi-bar-chart-line"></i> Resumen de Ventas
-            </div>
-            <div class="card-body">
-                {% for item in ventas_por_estado %}
-                <div style="margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span style="font-weight: 600; text-transform: capitalize;">
-                            {{ item.estado|title|replace:"_":" " }}
-                        </span>
-                        <span style="font-weight: bold; color: #4e73df;">{{ item.total }}</span>
-                    </div>
-                    <div style="height: 8px; background: #e3e6f0; border-radius: 10px; overflow: hidden;">
-                        <div style="height: 100%; background: linear-gradient(90deg, #4e73df, #36b9cc); width: {{ item.total|add:0 }}%; transition: width 1s ease;"></div>
-                    </div>
-                </div>
-                {% empty %}
-                <p style="color: #858796; text-align: center;">No hay datos disponibles</p>
-                {% endfor %}
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Tabla de ventas recientes -->
-    <div class="card">
-        <div class="card-header">
-            <i class="bi bi-clock-history"></i> Ventas Recientes
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th><i class="bi bi-hash"></i> ID</th>
-                            <th><i class="bi bi-card-text"></i> Título</th>
-                            <th><i class="bi bi-person"></i> Cliente</th>
-                            <th><i class="bi bi-currency-dollar"></i> Monto</th>
-                            <th><i class="bi bi-flag"></i> Estado</th>
-                            <th><i class="bi bi-calendar"></i> Fecha</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for venta in ventas_recientes %}
-                        <tr>
-                            <td>#{{ venta.id }}</td>
-                            <td>{{ venta.titulo }}</td>
-                            <td>{{ venta.cliente.nombre }}</td>
-                            <td><strong>${{ venta.monto|floatformat:0 }}</strong></td>
-                            <td>
-                                <span class="badge {{ venta.estado }}">
-                                    {% if venta.estado == 'ganada' %}
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    {% elif venta.estado == 'perdida' %}
-                                        <i class="bi bi-x-circle-fill"></i>
-                                    {% elif venta.estado == 'en_proceso' %}
-                                        <i class="bi bi-hourglass-split"></i>
-                                    {% else %}
-                                        <i class="bi bi-circle"></i>
-                                    {% endif %}
-                                    {{ venta.get_estado_display }}
-                                </span>
-                            </td>
-                            <td>{{ venta.fecha_creacion|date:"d/m/Y" }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="empty-state">
-                                <i class="bi bi-inbox"></i>
-                                <p>No hay ventas recientes</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Chart.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-<!-- Dashboard Charts Script -->
-<script src="{% static 'js/dashboard-charts.js' %}"></script>
-
-<!-- Inicializar gráficos con datos del backend -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Obtener datos del backend vía AJAX
-    fetch("{% url 'dashboard_data' %}")
-        .then(response => response.json())
-        .then(data => {
-            // Crear gráficos con los datos obtenidos
-            createVentasPorMesChart(data.ventas_por_mes);
-            createVentasPorEstadoChart(data.ventas_por_estado);
-            createTopClientesChart(data.top_clientes);
-            createIngresosMensualesChart(data.ingresos_por_mes);
-        })
-        .catch(error => {
-            console.error('Error al cargar datos del dashboard:', error);
-        });
-});
-</script>
-
 <style>
-    /* Estilos adicionales específicos del dashboard */
-    .badge {
-        padding: 0.5rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
+    .dashboard-container {
+        padding: 35px;
     }
-    
-    .badge.nueva {
-        background: #d1ecf1;
-        color: #0c5460;
+
+    .dashboard-title {
+        margin-bottom: 30px;
     }
-    
-    .badge.en_proceso {
-        background: #fff3cd;
-        color: #856404;
+
+    .dashboard-title h1 {
+        font-size: 36px;
+        color: #0f172a;
+        margin: 0;
     }
-    
-    .badge.ganada {
-        background: #d4edda;
-        color: #155724;
+
+    .dashboard-title p {
+        color: #64748b;
+        margin-top: 8px;
     }
-    
-    .badge.perdida {
-        background: #f8d7da;
-        color: #721c24;
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+        margin-bottom: 30px;
     }
-    
-    .table {
+
+    .card {
+        background: white;
+        padding: 26px;
+        border-radius: 22px;
+        box-shadow: 0 20px 45px rgba(15,23,42,.08);
+    }
+
+    .card span {
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .card h2 {
+        margin-top: 10px;
+        font-size: 32px;
+        color: #0f172a;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1.2fr .8fr;
+        gap: 24px;
+        margin-bottom: 30px;
+    }
+
+    .panel {
+        background: white;
+        padding: 28px;
+        border-radius: 22px;
+        box-shadow: 0 20px 45px rgba(15,23,42,.08);
+    }
+
+    .panel h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #0f172a;
+    }
+
+    .chart-item {
+        margin-bottom: 20px;
+    }
+
+    .chart-top {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .bar {
+        height: 14px;
+        background: #e2e8f0;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .fill {
+        height: 100%;
+        width: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #2563eb, #22c55e);
+        transition: 1s;
+    }
+
+    table {
         width: 100%;
         border-collapse: collapse;
     }
-    
-    .table thead th {
-        background: #f8f9fc;
-        padding: 0.75rem;
+
+    th, td {
+        padding: 14px;
+        border-bottom: 1px solid #e2e8f0;
         text-align: left;
-        font-weight: 600;
-        color: #5a5c69;
-        border-bottom: 2px solid #e3e6f0;
-        font-size: 0.9rem;
     }
-    
-    .table tbody td {
-        padding: 0.75rem;
-        border-bottom: 1px solid #e3e6f0;
+
+    th {
+        color: #64748b;
+        font-size: 13px;
+        text-transform: uppercase;
     }
-    
-    .table tbody tr:hover {
-        background: #f8f9fc;
+
+    .badge {
+        padding: 7px 13px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: bold;
     }
-    
-    .fade-in {
-        animation: fadeInUp 0.6s ease;
+
+    .nueva {
+        background: #dbeafe;
+        color: #1d4ed8;
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
+
+    .en_proceso {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .ganada {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .perdida {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media(max-width: 1100px) {
+        .cards {
+            grid-template-columns: repeat(2, 1fr);
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media(max-width: 700px) {
+        .cards {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-container {
+            padding: 20px;
         }
     }
 </style>
 
+<div class="dashboard-container">
+
+    <div class="dashboard-title">
+        <h1>Dashboard Comercial</h1>
+        <p>Resumen general del CRM con datos reales del sistema</p>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <span>Total clientes</span>
+            <h2>{{ total_clientes }}</h2>
+        </div>
+
+        <div class="card">
+            <span>Total ventas</span>
+            <h2>{{ total_ventas }}</h2>
+        </div>
+
+        <div class="card">
+            <span>Ventas ganadas</span>
+            <h2>{{ ventas_ganadas }}</h2>
+        </div>
+
+        <div class="card">
+            <span>Ingresos generados</span>
+            <h2>${{ total_ingresos }}</h2>
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <div class="panel">
+            <h3>Ventas por estado</h3>
+
+            {% for item in ventas_por_estado %}
+                <div class="chart-item">
+                    <div class="chart-top">
+                        <span>{{ item.estado|title }}</span>
+                        <span>{{ item.total }}</span>
+                    </div>
+
+                    <div class="bar">
+                        <div class="fill" data-value="{{ item.total }}"></div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay datos de ventas.</p>
+            {% endfor %}
+        </div>
+
+        <div class="panel">
+            <h3>Indicadores de clientes</h3>
+
+            <table>
+                <tr>
+                    <th>Indicador</th>
+                    <th>Total</th>
+                </tr>
+
+                <tr>
+                    <td>Clientes activos</td>
+                    <td>{{ clientes_activos }}</td>
+                </tr>
+
+                <tr>
+                    <td>Clientes inactivos</td>
+                    <td>{{ clientes_inactivos }}</td>
+                </tr>
+
+                <tr>
+                    <td>Seguimientos</td>
+                    <td>{{ seguimientos }}</td>
+                </tr>
+
+                <tr>
+                    <td>Ventas perdidas</td>
+                    <td>{{ ventas_perdidas }}</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="panel">
+        <h3>Ventas recientes</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Cliente</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for venta in ventas_recientes %}
+                    <tr>
+                        <td>{{ venta.titulo }}</td>
+                        <td>{{ venta.cliente.nombre }}</td>
+                        <td>${{ venta.monto }}</td>
+                        <td>
+                            <span class="badge {{ venta.estado }}">
+                                {{ venta.get_estado_display }}
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">No hay ventas recientes.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const fills = document.querySelectorAll(".fill");
+    let max = 1;
+
+    fills.forEach(fill => {
+        const value = parseInt(fill.dataset.value);
+
+        if (value > max) {
+            max = value;
+        }
+    });
+
+    fills.forEach(fill => {
+        const value = parseInt(fill.dataset.value);
+        const percent = Math.max((value / max) * 100, 8);
+
+        setTimeout(() => {
+            fill.style.width = percent + "%";
+        }, 300);
+    });
+</script>
 {% endblock %}
