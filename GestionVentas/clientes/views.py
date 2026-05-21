@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
 from .models import Cliente
 from .forms import ClienteForm
+from users.decorators import vendedor_required, admin_required
 
 
 @login_required
@@ -13,7 +15,11 @@ def cliente_list(request):
     clientes = Cliente.objects.all().order_by('-fecha_registro')
 
     if query:
-        clientes = clientes.filter(nombre__icontains=query) | clientes.filter(documento__icontains=query) | clientes.filter(correo__icontains=query)
+        clientes = (
+            clientes.filter(nombre__icontains=query) |
+            clientes.filter(documento__icontains=query) |
+            clientes.filter(correo__icontains=query)
+        )
 
     if estado:
         clientes = clientes.filter(estado=estado)
@@ -28,10 +34,14 @@ def cliente_list(request):
 @login_required
 def cliente_detail(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
-    return render(request, 'clientes/cliente_detail.html', {'cliente': cliente})
+
+    return render(request, 'clientes/cliente_detail.html', {
+        'cliente': cliente
+    })
 
 
 @login_required
+@vendedor_required
 def cliente_create(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
@@ -43,10 +53,13 @@ def cliente_create(request):
     else:
         form = ClienteForm()
 
-    return render(request, 'clientes/cliente_form.html', {'form': form})
+    return render(request, 'clientes/cliente_form.html', {
+        'form': form
+    })
 
 
 @login_required
+@vendedor_required
 def cliente_update(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
 
@@ -60,10 +73,14 @@ def cliente_update(request, pk):
     else:
         form = ClienteForm(instance=cliente)
 
-    return render(request, 'clientes/cliente_form.html', {'form': form})
+    return render(request, 'clientes/cliente_form.html', {
+        'form': form,
+        'cliente': cliente
+    })
 
 
 @login_required
+@admin_required
 def cliente_delete(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
 
@@ -72,4 +89,6 @@ def cliente_delete(request, pk):
         messages.success(request, 'Cliente eliminado correctamente.')
         return redirect('cliente_list')
 
-    return render(request, 'clientes/cliente_confirm_delete.html', {'cliente': cliente})
+    return render(request, 'clientes/cliente_confirm_delete.html', {
+        'cliente': cliente
+    })

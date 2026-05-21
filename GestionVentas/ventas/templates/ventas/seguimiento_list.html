@@ -24,7 +24,9 @@
     .pending{background:#fef3c7;color:#92400e}
     .actions{display:flex;gap:8px}
     .action{padding:8px 12px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:bold}
-    .view{background:#dbeafe;color:#1d4ed8}.edit{background:#fef3c7;color:#92400e}.delete{background:#fee2e2;color:#991b1b}
+    .view{background:#dbeafe;color:#1d4ed8}
+    .edit{background:#fef3c7;color:#92400e}
+    .delete{background:#fee2e2;color:#991b1b}
     @media(max-width:950px){.stats,.filter-form{grid-template-columns:1fr}.table-wrap{overflow:auto}table{min-width:950px}.page-header{flex-direction:column;align-items:flex-start;gap:15px}}
 </style>
 
@@ -33,7 +35,10 @@
         <h1>Seguimientos</h1>
         <p>Historial de contactos y próximas acciones comerciales</p>
     </div>
-    <a href="{% url 'seguimiento_create' %}" class="btn-main">Nuevo seguimiento</a>
+
+    {% if user.rol == 'VENDEDOR' or user.rol == 'ADMIN' %}
+        <a href="{% url 'seguimiento_create' %}" class="btn-main">Nuevo seguimiento</a>
+    {% endif %}
 </div>
 
 <div class="stats">
@@ -45,6 +50,7 @@
 <div class="filters">
     <form method="get" class="filter-form">
         <input type="text" name="q" placeholder="Buscar por cliente, oportunidad u observación" value="{{ query|default:'' }}">
+
         <select name="tipo">
             <option value="">Todos los tipos</option>
             <option value="llamada" {% if tipo == 'llamada' %}selected{% endif %}>Llamada</option>
@@ -53,6 +59,7 @@
             <option value="whatsapp" {% if tipo == 'whatsapp' %}selected{% endif %}>WhatsApp</option>
             <option value="otro" {% if tipo == 'otro' %}selected{% endif %}>Otro</option>
         </select>
+
         <button type="submit" class="btn-filter">Filtrar</button>
         <a href="{% url 'seguimiento_list' %}" class="btn-clear">Limpiar</a>
     </form>
@@ -73,6 +80,7 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for seguimiento in seguimientos %}
                 <tr>
@@ -82,20 +90,34 @@
                     <td>{% if seguimiento.usuario %}{{ seguimiento.usuario.username }}{% else %}Sin usuario{% endif %}</td>
                     <td>{{ seguimiento.fecha_contacto|date:"d/m/Y H:i" }}</td>
                     <td>{{ seguimiento.proximo_contacto|default:"No definido" }}</td>
-                    <td>{% if seguimiento.completado %}<span class="badge ok">Completado</span>{% else %}<span class="badge pending">Pendiente</span>{% endif %}</td>
+                    <td>
+                        {% if seguimiento.completado %}
+                            <span class="badge ok">Completado</span>
+                        {% else %}
+                            <span class="badge pending">Pendiente</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <div class="actions">
                             <a href="{% url 'seguimiento_detail' seguimiento.id %}" class="action view">Ver</a>
-                            <a href="{% url 'seguimiento_update' seguimiento.id %}" class="action edit">Editar</a>
-                            <a href="{% url 'seguimiento_delete' seguimiento.id %}" class="action delete">Eliminar</a>
+
+                            {% if user.rol == 'VENDEDOR' or user.rol == 'ADMIN' %}
+                                <a href="{% url 'seguimiento_update' seguimiento.id %}" class="action edit">Editar</a>
+                            {% endif %}
+
+                            {% if user.rol == 'ADMIN' %}
+                                <a href="{% url 'seguimiento_delete' seguimiento.id %}" class="action delete">Eliminar</a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="8">No hay seguimientos registrados.</td></tr>
+                <tr>
+                    <td colspan="8">No hay seguimientos registrados.</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
