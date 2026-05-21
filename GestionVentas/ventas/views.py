@@ -19,7 +19,13 @@ def venta_list(request):
     query = request.GET.get('q')
     estado = request.GET.get('estado')
 
-    ventas = OportunidadVenta.objects.select_related('cliente', 'vendedor').all()
+    ventas = OportunidadVenta.objects.select_related(
+        'cliente',
+        'vendedor'
+    ).all()
+
+    if request.user.rol == 'VENDEDOR':
+        ventas = ventas.filter(vendedor=request.user)
 
     if query:
         ventas = ventas.filter(
@@ -45,10 +51,12 @@ def venta_list(request):
 
 @login_required
 def venta_detail(request, pk):
-    venta = get_object_or_404(
-        OportunidadVenta.objects.select_related('cliente', 'vendedor'),
-        pk=pk
-    )
+    ventas = OportunidadVenta.objects.select_related('cliente', 'vendedor')
+
+    if request.user.rol == 'VENDEDOR':
+        ventas = ventas.filter(vendedor=request.user)
+
+    venta = get_object_or_404(ventas, pk=pk)
 
     seguimientos = venta.seguimientos.select_related(
         'cliente',
@@ -69,29 +77,40 @@ def venta_create(request):
 
         if form.is_valid():
             venta = form.save(commit=False)
-
-            if not venta.vendedor:
-                venta.vendedor = request.user
-
+            venta.vendedor = request.user
             venta.save()
+
             messages.success(request, 'Oportunidad de venta creada correctamente.')
             return redirect('venta_list')
     else:
-        form = OportunidadVentaForm(initial={'vendedor': request.user})
+        form = OportunidadVentaForm()
 
-    return render(request, 'ventas/venta_form.html', {'form': form})
+    return render(request, 'ventas/venta_form.html', {
+        'form': form
+    })
 
 
 @login_required
 @vendedor_required
 def venta_update(request, pk):
-    venta = get_object_or_404(OportunidadVenta, pk=pk)
+    ventas = OportunidadVenta.objects.all()
+
+    if request.user.rol == 'VENDEDOR':
+        ventas = ventas.filter(vendedor=request.user)
+
+    venta = get_object_or_404(ventas, pk=pk)
 
     if request.method == 'POST':
         form = OportunidadVentaForm(request.POST, instance=venta)
 
         if form.is_valid():
-            form.save()
+            venta = form.save(commit=False)
+
+            if request.user.rol == 'VENDEDOR':
+                venta.vendedor = request.user
+
+            venta.save()
+
             messages.success(request, 'Oportunidad de venta actualizada correctamente.')
             return redirect('venta_list')
     else:
@@ -113,7 +132,9 @@ def venta_delete(request, pk):
         messages.success(request, 'Oportunidad de venta eliminada correctamente.')
         return redirect('venta_list')
 
-    return render(request, 'ventas/venta_confirm_delete.html', {'venta': venta})
+    return render(request, 'ventas/venta_confirm_delete.html', {
+        'venta': venta
+    })
 
 
 @login_required
@@ -126,6 +147,9 @@ def seguimiento_list(request):
         'oportunidad',
         'usuario'
     ).all()
+
+    if request.user.rol == 'VENDEDOR':
+        seguimientos = seguimientos.filter(usuario=request.user)
 
     if query:
         seguimientos = seguimientos.filter(
@@ -151,10 +175,16 @@ def seguimiento_list(request):
 
 @login_required
 def seguimiento_detail(request, pk):
-    seguimiento = get_object_or_404(
-        Seguimiento.objects.select_related('cliente', 'oportunidad', 'usuario'),
-        pk=pk
+    seguimientos = Seguimiento.objects.select_related(
+        'cliente',
+        'oportunidad',
+        'usuario'
     )
+
+    if request.user.rol == 'VENDEDOR':
+        seguimientos = seguimientos.filter(usuario=request.user)
+
+    seguimiento = get_object_or_404(seguimientos, pk=pk)
 
     return render(request, 'ventas/seguimiento_detail.html', {
         'seguimiento': seguimiento
@@ -169,10 +199,7 @@ def seguimiento_create(request):
 
         if form.is_valid():
             seguimiento = form.save(commit=False)
-
-            if not seguimiento.usuario:
-                seguimiento.usuario = request.user
-
+            seguimiento.usuario = request.user
             seguimiento.save()
 
             if seguimiento.cliente.correo:
@@ -194,21 +221,34 @@ def seguimiento_create(request):
             messages.success(request, 'Seguimiento registrado correctamente.')
             return redirect('seguimiento_list')
     else:
-        form = SeguimientoForm(initial={'usuario': request.user})
+        form = SeguimientoForm()
 
-    return render(request, 'ventas/seguimiento_form.html', {'form': form})
+    return render(request, 'ventas/seguimiento_form.html', {
+        'form': form
+    })
 
 
 @login_required
 @vendedor_required
 def seguimiento_update(request, pk):
-    seguimiento = get_object_or_404(Seguimiento, pk=pk)
+    seguimientos = Seguimiento.objects.all()
+
+    if request.user.rol == 'VENDEDOR':
+        seguimientos = seguimientos.filter(usuario=request.user)
+
+    seguimiento = get_object_or_404(seguimientos, pk=pk)
 
     if request.method == 'POST':
         form = SeguimientoForm(request.POST, instance=seguimiento)
 
         if form.is_valid():
-            form.save()
+            seguimiento = form.save(commit=False)
+
+            if request.user.rol == 'VENDEDOR':
+                seguimiento.usuario = request.user
+
+            seguimiento.save()
+
             messages.success(request, 'Seguimiento actualizado correctamente.')
             return redirect('seguimiento_list')
     else:
@@ -240,25 +280,31 @@ def ventas_dashboard(request):
     hoy = timezone.now().date()
     limite = hoy + timedelta(days=7)
 
-    total_clientes = Cliente.objects.count()
-    total_ventas = OportunidadVenta.objects.count()
+    ventas = OportunidadVenta.objects.select_related('cliente', 'vendedor').all()
+    seguimientos_qs = Seguimiento.objects.select_related('cliente', 'oportunidad', 'usuario').all()
 
-    clientes_activos = Cliente.objects.filter(estado='activo').count()
-    clientes_inactivos = Cliente.objects.filter(estado='inactivo').count()
+    if request.user.rol == 'VENDEDOR':
+        ventas = ventas.filter(vendedor=request.user)
+        seguimientos_qs = seguimientos_qs.filter(usuario=request.user)
 
-    total_ingresos = OportunidadVenta.objects.filter(
-        estado='ganada'
-    ).aggregate(total=Sum('monto'))['total'] or 0
+    clientes_ids = ventas.values_list('cliente_id', flat=True).distinct()
+    clientes = Cliente.objects.filter(id__in=clientes_ids)
+
+    if request.user.rol == 'ADMIN':
+        clientes = Cliente.objects.all()
+
+    clientes_activos = clientes.filter(estado='activo').count()
+    clientes_inactivos = clientes.filter(estado='inactivo').count()
 
     ventas_por_estado = (
-        OportunidadVenta.objects
+        ventas
         .values('estado')
         .annotate(total=Count('id'))
         .order_by('estado')
     )
 
     ventas_por_mes = (
-        OportunidadVenta.objects
+        ventas
         .annotate(mes=TruncMonth('fecha_creacion'))
         .values('mes')
         .annotate(total=Count('id'), ingresos=Sum('monto'))
@@ -266,31 +312,25 @@ def ventas_dashboard(request):
     )
 
     ventas_por_vendedor = (
-        OportunidadVenta.objects
+        ventas
         .values('vendedor__username')
         .annotate(total=Count('id'), ingresos=Sum('monto'))
         .order_by('-total')[:5]
     )
 
     recordatorios_proximos = (
-        Seguimiento.objects
+        seguimientos_qs
         .filter(completado=False, proximo_contacto__range=[hoy, limite])
-        .select_related('cliente', 'oportunidad', 'usuario')
         .order_by('proximo_contacto')[:6]
     )
 
     recordatorios_vencidos = (
-        Seguimiento.objects
+        seguimientos_qs
         .filter(completado=False, proximo_contacto__lt=hoy)
-        .select_related('cliente', 'oportunidad', 'usuario')
         .order_by('proximo_contacto')[:6]
     )
 
-    ventas_recientes = (
-        OportunidadVenta.objects
-        .select_related('cliente', 'vendedor')
-        .order_by('-fecha_creacion')[:5]
-    )
+    ventas_recientes = ventas.order_by('-fecha_creacion')[:5]
 
     clientes_por_estado = [
         {'estado': 'Activos', 'total': clientes_activos},
@@ -298,14 +338,14 @@ def ventas_dashboard(request):
     ]
 
     return render(request, 'ventas/ventas_dashboard.html', {
-        'total_clientes': total_clientes,
-        'total_ventas': total_ventas,
+        'total_clientes': clientes.count(),
+        'total_ventas': ventas.count(),
         'clientes_activos': clientes_activos,
         'clientes_inactivos': clientes_inactivos,
-        'total_ingresos': total_ingresos,
-        'ventas_ganadas': OportunidadVenta.objects.filter(estado='ganada').count(),
-        'ventas_perdidas': OportunidadVenta.objects.filter(estado='perdida').count(),
-        'seguimientos': Seguimiento.objects.count(),
+        'total_ingresos': ventas.filter(estado='ganada').aggregate(total=Sum('monto'))['total'] or 0,
+        'ventas_ganadas': ventas.filter(estado='ganada').count(),
+        'ventas_perdidas': ventas.filter(estado='perdida').count(),
+        'seguimientos': seguimientos_qs.count(),
         'ventas_por_estado': ventas_por_estado,
         'ventas_por_mes': ventas_por_mes,
         'ventas_por_vendedor': ventas_por_vendedor,
