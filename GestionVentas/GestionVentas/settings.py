@@ -3,6 +3,8 @@ Django settings for GestionVentas project.
 """
 
 from pathlib import Path
+from urllib.parse import unquote, urlparse
+
 from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,10 +14,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-c*vft+r9sx_sg1p30^e^q@5)f@=b$e9u&dr83r!bff4=ec45g=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
 
 INSTALLED_APPS = [
 
@@ -84,13 +94,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'GestionVentas.wsgi.application'
 
+DATABASE_URL = config('DATABASE_URL', default='')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DATABASE_URL:
+    parsed_db_url = urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql' if parsed_db_url.scheme in ['postgres', 'postgresql'] else config('DB_ENGINE', default='django.db.backends.sqlite3'),
+            'NAME': unquote(parsed_db_url.path[1:]) if parsed_db_url.path else config('DB_NAME', default=BASE_DIR / 'db.sqlite3'),
+            'USER': unquote(parsed_db_url.username or ''),
+            'PASSWORD': unquote(parsed_db_url.password or ''),
+            'HOST': parsed_db_url.hostname or config('DB_HOST', default=''),
+            'PORT': parsed_db_url.port or config('DB_PORT', default=''),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
+            'NAME': config('DB_NAME', default=BASE_DIR / 'db.sqlite3'),
+            'USER': config('DB_USER', default=''),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default=''),
+            'PORT': config('DB_PORT', default=''),
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
