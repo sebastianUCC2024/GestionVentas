@@ -156,6 +156,8 @@
             text-decoration:none;
             font-weight:800;
             transition:.25s;
+            display:block;
+            margin-bottom:14px;
         }
 
         .links a:hover{
@@ -218,23 +220,29 @@
         {% csrf_token %}
 
         <div class="form-group">
+
             <label>Usuario</label>
+
             <input
                 type="text"
                 name="username"
                 placeholder="Ingresa tu usuario"
                 required
             >
+
         </div>
 
         <div class="form-group">
+
             <label>Contraseña</label>
+
             <input
                 type="password"
                 name="password"
                 placeholder="Ingresa tu contraseña"
                 required
             >
+
         </div>
 
         <button type="submit" class="login-btn">
@@ -245,13 +253,13 @@
 
     <div class="links">
 
-        <a href="{% url 'register_cliente' %}">
+        <a href="{% url 'cliente_register' %}">
             Crear cuenta cliente
         </a>
 
         <div class="divider"></div>
 
-        <a href="{% url 'register_vendedor' %}">
+        <a href="{% url 'vendedor_register' %}">
             Crear cuenta vendedor
         </a>
 
