@@ -1,0 +1,192 @@
+<style>
+
+    .welcome-banner{
+        position:relative;
+        overflow:hidden;
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+        border-radius:34px;
+        padding:40px;
+        margin-bottom:30px;
+        color:white;
+        box-shadow:0 25px 60px rgba(37,99,235,.28);
+    }
+
+    .welcome-banner::before{
+        content:"";
+        position:absolute;
+        width:320px;
+        height:320px;
+        border-radius:50%;
+        background:rgba(255,255,255,.08);
+        top:-120px;
+        right:-120px;
+    }
+
+    .welcome-banner::after{
+        content:"";
+        position:absolute;
+        width:220px;
+        height:220px;
+        border-radius:50%;
+        background:rgba(255,255,255,.05);
+        bottom:-80px;
+        left:-80px;
+    }
+
+    .welcome-content{
+        position:relative;
+        z-index:2;
+    }
+
+    .welcome-content h1{
+        font-size:44px;
+        font-weight:900;
+        letter-spacing:-1px;
+        margin-bottom:14px;
+    }
+
+    .welcome-content p{
+        max-width:720px;
+        line-height:1.8;
+        color:rgba(255,255,255,.90);
+        font-size:16px;
+    }
+
+    .welcome-user{
+        margin-top:24px;
+        display:inline-flex;
+        align-items:center;
+        gap:12px;
+        background:rgba(255,255,255,.10);
+        border:1px solid rgba(255,255,255,.18);
+        padding:14px 20px;
+        border-radius:18px;
+        backdrop-filter:blur(12px);
+    }
+
+    .welcome-avatar{
+        width:52px;
+        height:52px;
+        border-radius:50%;
+        background:white;
+        color:#2563eb;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        font-size:20px;
+    }
+
+    .welcome-user strong{
+        display:block;
+        font-size:15px;
+    }
+
+    .welcome-user span{
+        font-size:13px;
+        color:rgba(255,255,255,.80);
+    }
+
+    .welcome-actions{
+        margin-top:28px;
+        display:flex;
+        gap:16px;
+        flex-wrap:wrap;
+    }
+
+    .welcome-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        padding:16px 24px;
+        border-radius:18px;
+        text-decoration:none;
+        font-weight:900;
+        transition:.25s;
+    }
+
+    .welcome-btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .welcome-btn.primary{
+        background:white;
+        color:#2563eb;
+    }
+
+    .welcome-btn.secondary{
+        background:rgba(255,255,255,.10);
+        color:white;
+        border:1px solid rgba(255,255,255,.18);
+    }
+
+    @media(max-width:700px){
+
+        .welcome-banner{
+            padding:30px;
+        }
+
+        .welcome-content h1{
+            font-size:34px;
+        }
+
+    }
+
+</style>
+
+<div class="welcome-banner">
+
+    <div class="welcome-content">
+
+        <h1>
+            Bienvenido,
+            {{ request.user.first_name|default:request.user.username }}
+        </h1>
+
+        <p>
+            Gestiona clientes, ventas, seguimientos, reportes y métricas
+            comerciales desde un solo lugar con tu plataforma CRM.
+        </p>
+
+        <div class="welcome-user">
+
+            <div class="welcome-avatar">
+                {{ request.user.username|slice:":1"|upper }}
+            </div>
+
+            <div>
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+                <span>
+                    {{ request.user.get_rol_display }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="welcome-actions">
+
+            {% if request.user.rol == 'ADMIN' or request.user.rol == 'VENDEDOR' %}
+
+            <a href="{% url 'venta_create' %}"
+               class="welcome-btn primary">
+                Nueva venta
+            </a>
+
+            {% endif %}
+
+            <a href="{% url 'reporte_dashboard' %}"
+               class="welcome-btn secondary">
+                Ver reportes
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

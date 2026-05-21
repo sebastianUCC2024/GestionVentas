@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Clientes</title>
+
+    <style>
+
+        body{
+            font-family:Arial, Helvetica, sans-serif;
+            color:#0f172a;
+            padding:30px;
+        }
+
+        .header{
+            background:linear-gradient(135deg,#2563eb,#1d4ed8);
+            color:white;
+            padding:30px;
+            border-radius:18px;
+            margin-bottom:30px;
+        }
+
+        .header h1{
+            margin:0;
+            font-size:34px;
+        }
+
+        .header p{
+            margin-top:10px;
+            font-size:14px;
+            opacity:.9;
+        }
+
+        .stats{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:18px;
+            margin-bottom:30px;
+        }
+
+        .stat-card{
+            border:1px solid #e2e8f0;
+            border-radius:18px;
+            padding:20px;
+            background:#f8fafc;
+        }
+
+        .stat-card span{
+            display:block;
+            font-size:13px;
+            color:#64748b;
+            margin-bottom:8px;
+            font-weight:bold;
+        }
+
+        .stat-card strong{
+            font-size:28px;
+            color:#0f172a;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#2563eb;
+            color:white;
+            padding:14px;
+            text-align:left;
+            font-size:12px;
+        }
+
+        td{
+            padding:14px;
+            border-bottom:1px solid #e2e8f0;
+            font-size:13px;
+        }
+
+        .badge{
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:bold;
+            display:inline-block;
+        }
+
+        .activo{
+            background:#dcfce7;
+            color:#166534;
+        }
+
+        .inactivo{
+            background:#fee2e2;
+            color:#991b1b;
+        }
+
+        .footer{
+            margin-top:40px;
+            text-align:center;
+            color:#64748b;
+            font-size:12px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>
+        Reporte de Clientes
+    </h1>
+
+    <p>
+        Sistema CRM GestionVentas
+    </p>
+
+</div>
+
+<div class="stats">
+
+    <div class="stat-card">
+
+        <span>Total clientes</span>
+
+        <strong>
+            {{ total_clientes }}
+        </strong>
+
+    </div>
+
+    <div class="stat-card">
+
+        <span>Clientes activos</span>
+
+        <strong>
+            {{ clientes_activos }}
+        </strong>
+
+    </div>
+
+    <div class="stat-card">
+
+        <span>Clientes inactivos</span>
+
+        <strong>
+            {{ clientes_inactivos }}
+        </strong>
+
+    </div>
+
+</div>
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Empresa</th>
+            <th>Estado</th>
+            <th>Fecha registro</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for cliente in clientes %}
+
+        <tr>
+
+            <td>
+                #{{ cliente.id }}
+            </td>
+
+            <td>
+                {{ cliente.nombre }}
+            </td>
+
+            <td>
+                {{ cliente.email }}
+            </td>
+
+            <td>
+                {{ cliente.telefono }}
+            </td>
+
+            <td>
+                {{ cliente.empresa }}
+            </td>
+
+            <td>
+
+                {% if cliente.activo %}
+
+                <span class="badge activo">
+                    Activo
+                </span>
+
+                {% else %}
+
+                <span class="badge inactivo">
+                    Inactivo
+                </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+                {{ cliente.fecha_creacion|date:"d/m/Y" }}
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<div class="footer">
+
+    Reporte generado automáticamente por GestionVentas CRM.
+
+</div>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sesión cerrada | GestionVentas</title>
+    <title>Página no encontrada | GestionVentas</title>
 
     <style>
 
@@ -27,32 +27,32 @@
             position:relative;
         }
 
-        .bg-shape{
+        .bg{
             position:absolute;
             border-radius:50%;
             filter:blur(70px);
             opacity:.25;
         }
 
-        .shape1{
-            width:320px;
-            height:320px;
-            background:#2563eb;
-            top:-90px;
-            left:-90px;
-        }
-
-        .shape2{
+        .bg1{
             width:300px;
             height:300px;
+            background:#2563eb;
+            top:-80px;
+            left:-80px;
+        }
+
+        .bg2{
+            width:280px;
+            height:280px;
             background:#22c55e;
             bottom:-90px;
             right:-90px;
         }
 
-        .logout-card{
+        .card{
             width:100%;
-            max-width:520px;
+            max-width:560px;
             background:rgba(255,255,255,.08);
             backdrop-filter:blur(18px);
             border:1px solid rgba(255,255,255,.15);
@@ -64,38 +64,29 @@
             box-shadow:0 25px 60px rgba(0,0,0,.30);
         }
 
-        .success-icon{
-            width:110px;
-            height:110px;
-            margin:0 auto 28px;
-            border-radius:50%;
-            background:linear-gradient(135deg,#22c55e,#15803d);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:white;
-            font-size:52px;
+        .number{
+            font-size:110px;
             font-weight:900;
-            box-shadow:0 20px 35px rgba(34,197,94,.25);
+            color:white;
+            line-height:1;
+            margin-bottom:12px;
         }
 
-        .logout-card h1{
+        h1{
             color:white;
-            font-size:42px;
-            font-weight:900;
-            letter-spacing:-1px;
+            font-size:38px;
             margin-bottom:14px;
         }
 
-        .logout-card p{
+        p{
             color:#cbd5e1;
             line-height:1.8;
             font-size:16px;
         }
 
-        .btn-login{
+        .btn{
             display:inline-block;
-            margin-top:30px;
+            margin-top:28px;
             background:linear-gradient(135deg,#2563eb,#1d4ed8);
             color:white;
             text-decoration:none;
@@ -103,62 +94,33 @@
             border-radius:18px;
             font-weight:900;
             transition:.25s;
-            box-shadow:0 18px 30px rgba(37,99,235,.30);
         }
 
-        .btn-login:hover{
+        .btn:hover{
             transform:translateY(-2px);
         }
 
-        .footer{
-            margin-top:24px;
-            color:#94a3b8;
-            font-size:13px;
-            line-height:1.6;
-        }
-
-        @media(max-width:600px){
-
-            .logout-card{
-                margin:20px;
-                padding:34px;
-            }
-
-            .logout-card h1{
-                font-size:34px;
-            }
-
-        }
-
     </style>
-
 </head>
 
 <body>
 
-<div class="bg-shape shape1"></div>
-<div class="bg-shape shape2"></div>
+<div class="bg bg1"></div>
+<div class="bg bg2"></div>
 
-<div class="logout-card">
+<div class="card">
 
-    <div class="success-icon">
-        ✓
-    </div>
+    <div class="number">404</div>
 
-    <h1>Sesión cerrada</h1>
+    <h1>Página no encontrada</h1>
 
     <p>
-        Has cerrado sesión correctamente en el sistema CRM GestionVentas.
-        Tu información y actividad quedaron protegidas.
+        La página que intentas abrir no existe o fue movida.
     </p>
 
-    <a href="{% url 'login' %}" class="btn-login">
-        Volver a iniciar sesión
+    <a href="{% url 'ventas_dashboard' %}" class="btn">
+        Volver al sistema
     </a>
-
-    <div class="footer">
-        Sistema de Gestión de Ventas y Clientes
-    </div>
 
 </div>
 

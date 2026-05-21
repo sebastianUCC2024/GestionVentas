@@ -17,10 +17,10 @@ def cliente_list(request):
 
     if query:
         clientes = clientes.filter(
+            Q(id__icontains=query) |
             Q(nombre__icontains=query) |
             Q(documento__icontains=query) |
-            Q(correo__icontains=query) |
-            Q(id__icontains=query)
+            Q(correo__icontains=query)
         )
 
     if estado:
@@ -36,10 +36,7 @@ def cliente_list(request):
 @login_required
 def cliente_detail(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
-
-    return render(request, 'clientes/cliente_detail.html', {
-        'cliente': cliente
-    })
+    return render(request, 'clientes/cliente_detail.html', {'cliente': cliente})
 
 
 @login_required
@@ -55,9 +52,7 @@ def cliente_create(request):
     else:
         form = ClienteForm()
 
-    return render(request, 'clientes/cliente_form.html', {
-        'form': form
-    })
+    return render(request, 'clientes/cliente_form.html', {'form': form})
 
 
 @login_required
@@ -91,6 +86,4 @@ def cliente_delete(request, pk):
         messages.success(request, 'Cliente eliminado correctamente.')
         return redirect('cliente_list')
 
-    return render(request, 'clientes/cliente_confirm_delete.html', {
-        'cliente': cliente
-    })
+    return render(request, 'clientes/cliente_confirm_delete.html', {'cliente': cliente})

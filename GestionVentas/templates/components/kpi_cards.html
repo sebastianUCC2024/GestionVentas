@@ -1,0 +1,170 @@
+<style>
+
+    .kpi-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+        gap:24px;
+        margin-bottom:30px;
+    }
+
+    .kpi-card{
+        position:relative;
+        overflow:hidden;
+        background:white;
+        border-radius:30px;
+        padding:28px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+        transition:.25s;
+    }
+
+    .kpi-card:hover{
+        transform:translateY(-4px);
+    }
+
+    .kpi-card::before{
+        content:"";
+        position:absolute;
+        width:140px;
+        height:140px;
+        border-radius:50%;
+        background:rgba(37,99,235,.08);
+        top:-50px;
+        right:-50px;
+    }
+
+    .kpi-icon{
+        width:62px;
+        height:62px;
+        border-radius:18px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:28px;
+        color:white;
+        margin-bottom:20px;
+        box-shadow:0 18px 30px rgba(0,0,0,.15);
+    }
+
+    .blue{
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    }
+
+    .green{
+        background:linear-gradient(135deg,#22c55e,#15803d);
+    }
+
+    .orange{
+        background:linear-gradient(135deg,#f59e0b,#d97706);
+    }
+
+    .red{
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+    }
+
+    .kpi-title{
+        color:#64748b;
+        font-size:14px;
+        font-weight:800;
+        margin-bottom:10px;
+    }
+
+    .kpi-value{
+        font-size:40px;
+        font-weight:900;
+        color:#0f172a;
+        letter-spacing:-1px;
+    }
+
+    .kpi-footer{
+        margin-top:14px;
+        font-size:13px;
+        font-weight:700;
+        color:#64748b;
+    }
+
+</style>
+
+<div class="kpi-grid">
+
+    <div class="kpi-card">
+
+        <div class="kpi-icon blue">
+            👥
+        </div>
+
+        <div class="kpi-title">
+            Clientes activos
+        </div>
+
+        <div class="kpi-value">
+            {{ total_clientes }}
+        </div>
+
+        <div class="kpi-footer">
+            Base total de clientes registrados
+        </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+        <div class="kpi-icon green">
+            💰
+        </div>
+
+        <div class="kpi-title">
+            Ventas generadas
+        </div>
+
+        <div class="kpi-value">
+            ${{ total_ingresos }}
+        </div>
+
+        <div class="kpi-footer">
+            Ingresos acumulados
+        </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+        <div class="kpi-icon orange">
+            📈
+        </div>
+
+        <div class="kpi-title">
+            Oportunidades
+        </div>
+
+        <div class="kpi-value">
+            {{ total_ventas }}
+        </div>
+
+        <div class="kpi-footer">
+            Ventas registradas en el CRM
+        </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+        <div class="kpi-icon red">
+            ⏰
+        </div>
+
+        <div class="kpi-title">
+            Seguimientos
+        </div>
+
+        <div class="kpi-value">
+            {{ total_seguimientos }}
+        </div>
+
+        <div class="kpi-footer">
+            Contactos y recordatorios
+        </div>
+
+    </div>
+
+</div>

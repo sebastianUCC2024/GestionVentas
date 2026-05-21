@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login | GestionVentas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | GestionVentas</title>
 
     <style>
 
@@ -11,139 +11,214 @@
             margin:0;
             padding:0;
             box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
         }
 
         body{
             min-height:100vh;
-            font-family:Arial, sans-serif;
-            background:
-                linear-gradient(rgba(15,23,42,.85), rgba(15,23,42,.9)),
-                url('https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=1400');
-            background-size:cover;
-            background-position:center;
             display:flex;
             justify-content:center;
             align-items:center;
-            padding:20px;
+            background:
+                radial-gradient(circle at top left,#2563eb 0%,transparent 35%),
+                radial-gradient(circle at bottom right,#22c55e 0%,transparent 35%),
+                #0f172a;
+            overflow:hidden;
+            position:relative;
         }
 
-        .login-container{
+        .bg-shape{
+            position:absolute;
+            border-radius:50%;
+            filter:blur(70px);
+            opacity:.25;
+        }
+
+        .shape1{
+            width:300px;
+            height:300px;
+            background:#2563eb;
+            top:-80px;
+            left:-80px;
+        }
+
+        .shape2{
+            width:280px;
+            height:280px;
+            background:#22c55e;
+            bottom:-90px;
+            right:-90px;
+        }
+
+        .login-card{
             width:100%;
-            max-width:460px;
+            max-width:470px;
             background:rgba(255,255,255,.08);
             backdrop-filter:blur(18px);
-            border:1px solid rgba(255,255,255,.14);
-            border-radius:30px;
-            padding:45px;
-            box-shadow:0 25px 60px rgba(0,0,0,.35);
-            color:white;
+            border:1px solid rgba(255,255,255,.15);
+            border-radius:34px;
+            padding:42px;
+            box-shadow:0 25px 60px rgba(0,0,0,.30);
+            position:relative;
+            z-index:10;
         }
 
         .logo{
             text-align:center;
-            margin-bottom:35px;
+            margin-bottom:34px;
         }
 
         .logo h1{
-            font-size:38px;
-            margin-bottom:10px;
+            color:white;
+            font-size:42px;
+            font-weight:900;
+            letter-spacing:-1px;
         }
 
         .logo p{
             color:#cbd5e1;
-        }
-
-        .field{
-            margin-bottom:22px;
-        }
-
-        .field label{
-            display:block;
-            margin-bottom:10px;
-            font-weight:bold;
-        }
-
-        .field input{
-            width:100%;
-            padding:16px;
-            border:none;
-            border-radius:16px;
-            outline:none;
-            background:rgba(255,255,255,.12);
-            color:white;
+            margin-top:10px;
             font-size:15px;
         }
 
-        .field input::placeholder{
+        .error-box{
+            background:rgba(220,38,38,.18);
+            border:1px solid rgba(248,113,113,.35);
+            color:#fecaca;
+            padding:16px;
+            border-radius:18px;
+            margin-bottom:22px;
+            font-weight:700;
+            line-height:1.6;
+        }
+
+        .form-group{
+            margin-bottom:22px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:10px;
+            color:white;
+            font-size:14px;
+            font-weight:800;
+        }
+
+        input{
+            width:100%;
+            padding:17px;
+            border:none;
+            border-radius:18px;
+            background:rgba(255,255,255,.10);
+            color:white;
+            font-size:15px;
+            outline:none;
+            transition:.25s;
+            border:1px solid transparent;
+        }
+
+        input::placeholder{
             color:#cbd5e1;
         }
 
-        .btn{
-            width:100%;
-            padding:16px;
-            border:none;
-            border-radius:16px;
-            background:linear-gradient(135deg,#2563eb,#1d4ed8);
-            color:white;
-            font-size:16px;
-            font-weight:bold;
-            cursor:pointer;
-            transition:.3s;
+        input:focus{
+            border-color:#60a5fa;
+            background:rgba(255,255,255,.14);
+            box-shadow:0 0 0 4px rgba(96,165,250,.18);
         }
 
-        .btn:hover{
+        .login-btn{
+            width:100%;
+            border:none;
+            padding:18px;
+            border-radius:18px;
+            background:linear-gradient(135deg,#2563eb,#1d4ed8);
+            color:white;
+            font-size:15px;
+            font-weight:900;
+            cursor:pointer;
+            transition:.25s;
+            margin-top:10px;
+            box-shadow:0 18px 30px rgba(37,99,235,.30);
+        }
+
+        .login-btn:hover{
             transform:translateY(-2px);
-            box-shadow:0 18px 35px rgba(37,99,235,.35);
         }
 
         .links{
-            margin-top:28px;
+            margin-top:26px;
             text-align:center;
         }
 
         .links a{
-            display:block;
-            margin-top:14px;
             color:#93c5fd;
             text-decoration:none;
-            font-weight:bold;
+            font-weight:800;
+            transition:.25s;
         }
 
-        .error{
-            background:#fee2e2;
-            color:#991b1b;
-            padding:14px;
-            border-radius:14px;
-            margin-bottom:20px;
-            font-size:14px;
-            font-weight:bold;
+        .links a:hover{
+            color:white;
+        }
+
+        .divider{
+            margin:20px 0;
+            height:1px;
+            background:rgba(255,255,255,.12);
+        }
+
+        .footer-text{
+            margin-top:18px;
+            text-align:center;
+            color:#cbd5e1;
+            font-size:13px;
+            line-height:1.6;
+        }
+
+        @media(max-width:600px){
+
+            .login-card{
+                margin:20px;
+                padding:30px;
+            }
+
+            .logo h1{
+                font-size:34px;
+            }
+
         }
 
     </style>
+
 </head>
 
 <body>
 
-<div class="login-container">
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+
+<div class="login-card">
 
     <div class="logo">
         <h1>GestionVentas</h1>
-        <p>CRM de clientes y ventas</p>
+        <p>CRM de ventas y clientes</p>
     </div>
 
     {% if form.errors %}
-        <div class="error">
-            Usuario o contraseña incorrectos.
-        </div>
+
+    <div class="error-box">
+        Usuario o contraseña incorrectos.
+    </div>
+
     {% endif %}
 
     <form method="post">
 
         {% csrf_token %}
 
-        <div class="field">
+        <div class="form-group">
             <label>Usuario</label>
-
             <input
                 type="text"
                 name="username"
@@ -152,9 +227,8 @@
             >
         </div>
 
-        <div class="field">
+        <div class="form-group">
             <label>Contraseña</label>
-
             <input
                 type="password"
                 name="password"
@@ -163,22 +237,28 @@
             >
         </div>
 
-        <button type="submit" class="btn">
-            Ingresar al sistema
+        <button type="submit" class="login-btn">
+            Iniciar sesión
         </button>
 
     </form>
 
     <div class="links">
 
-        <a href="{% url 'cliente_register' %}">
-            Crear cuenta de cliente
+        <a href="{% url 'register_cliente' %}">
+            Crear cuenta cliente
         </a>
 
-        <a href="{% url 'vendedor_register' %}">
-            Registrar vendedor
+        <div class="divider"></div>
+
+        <a href="{% url 'register_vendedor' %}">
+            Crear cuenta vendedor
         </a>
 
+    </div>
+
+    <div class="footer-text">
+        Sistema CRM para gestión de clientes, ventas y seguimientos comerciales.
     </div>
 
 </div>

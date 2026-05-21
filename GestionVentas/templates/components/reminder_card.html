@@ -1,0 +1,188 @@
+<style>
+
+    .reminder-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+        gap:24px;
+        margin-bottom:30px;
+    }
+
+    .reminder-card{
+        background:white;
+        border-radius:30px;
+        padding:30px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+    }
+
+    .reminder-card h3{
+        font-size:24px;
+        color:#0f172a;
+        margin-bottom:10px;
+    }
+
+    .reminder-card p{
+        color:#64748b;
+        margin-bottom:24px;
+        line-height:1.6;
+    }
+
+    .reminder-item{
+        border-radius:22px;
+        padding:20px;
+        margin-bottom:16px;
+        border:1px solid #e2e8f0;
+        transition:.25s;
+    }
+
+    .reminder-item:hover{
+        transform:translateY(-2px);
+    }
+
+    .reminder-item.warning{
+        background:#fefce8;
+        border-color:#fde68a;
+    }
+
+    .reminder-item.danger{
+        background:#fef2f2;
+        border-color:#fecaca;
+    }
+
+    .reminder-item.success{
+        background:#f0fdf4;
+        border-color:#bbf7d0;
+    }
+
+    .reminder-item strong{
+        display:block;
+        color:#0f172a;
+        font-size:16px;
+        margin-bottom:10px;
+    }
+
+    .reminder-meta{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+    }
+
+    .reminder-meta span{
+        color:#475569;
+        font-size:13px;
+        font-weight:700;
+    }
+
+    .empty-reminder{
+        padding:26px;
+        border-radius:22px;
+        background:#f8fafc;
+        border:1px dashed #cbd5e1;
+        text-align:center;
+        color:#64748b;
+        font-weight:700;
+    }
+
+</style>
+
+<div class="reminder-grid">
+
+    <div class="reminder-card">
+
+        <h3>
+            Próximos recordatorios
+        </h3>
+
+        <p>
+            Seguimientos pendientes próximos a realizar.
+        </p>
+
+        {% for item in recordatorios_proximos %}
+
+        <div class="reminder-item warning">
+
+            <strong>
+                {{ item.cliente.nombre }}
+            </strong>
+
+            <div class="reminder-meta">
+
+                <span>
+                    Venta:
+                    {{ item.oportunidad.titulo }}
+                </span>
+
+                <span>
+                    Próximo contacto:
+                    {{ item.proximo_contacto|date:"d/m/Y" }}
+                </span>
+
+                <span>
+                    Tipo:
+                    {{ item.get_tipo_contacto_display }}
+                </span>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-reminder">
+            No hay recordatorios próximos.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="reminder-card">
+
+        <h3>
+            Recordatorios vencidos
+        </h3>
+
+        <p>
+            Seguimientos comerciales pendientes fuera de fecha.
+        </p>
+
+        {% for item in recordatorios_vencidos %}
+
+        <div class="reminder-item danger">
+
+            <strong>
+                {{ item.cliente.nombre }}
+            </strong>
+
+            <div class="reminder-meta">
+
+                <span>
+                    Venta:
+                    {{ item.oportunidad.titulo }}
+                </span>
+
+                <span>
+                    Fecha vencida:
+                    {{ item.proximo_contacto|date:"d/m/Y" }}
+                </span>
+
+                <span>
+                    Responsable:
+                    {{ item.usuario.username }}
+                </span>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-reminder">
+            No hay recordatorios vencidos.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

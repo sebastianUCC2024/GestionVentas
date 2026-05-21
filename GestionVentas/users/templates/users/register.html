@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro | GestionVentas</title>
 
     <style>
@@ -10,6 +11,7 @@
             margin:0;
             padding:0;
             box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
         }
 
         body{
@@ -17,137 +19,274 @@
             display:flex;
             justify-content:center;
             align-items:center;
-            padding:20px;
             background:
-                linear-gradient(135deg,#0f172a,#2563eb);
-            font-family:Arial,sans-serif;
+                radial-gradient(circle at top left,#2563eb 0%,transparent 35%),
+                radial-gradient(circle at bottom right,#22c55e 0%,transparent 35%),
+                #0f172a;
+            overflow:hidden;
+            position:relative;
+            padding:30px 0;
+        }
+
+        .bg-shape{
+            position:absolute;
+            border-radius:50%;
+            filter:blur(70px);
+            opacity:.25;
+        }
+
+        .shape1{
+            width:320px;
+            height:320px;
+            background:#2563eb;
+            top:-80px;
+            left:-80px;
+        }
+
+        .shape2{
+            width:300px;
+            height:300px;
+            background:#22c55e;
+            bottom:-90px;
+            right:-90px;
         }
 
         .register-card{
             width:100%;
-            max-width:550px;
-            background:white;
-            border-radius:28px;
-            padding:45px;
-            box-shadow:0 25px 60px rgba(0,0,0,.25);
+            max-width:620px;
+            background:rgba(255,255,255,.08);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,.15);
+            border-radius:36px;
+            padding:42px;
+            box-shadow:0 25px 60px rgba(0,0,0,.30);
+            position:relative;
+            z-index:10;
         }
 
-        .title{
+        .logo{
             text-align:center;
-            margin-bottom:30px;
+            margin-bottom:34px;
         }
 
-        .title h1{
-            color:#0f172a;
-            margin-bottom:8px;
+        .logo h1{
+            color:white;
+            font-size:42px;
+            font-weight:900;
+            letter-spacing:-1px;
         }
 
-        .title p{
-            color:#64748b;
-        }
-
-        .field{
-            margin-bottom:20px;
-        }
-
-        .field label{
-            display:block;
-            margin-bottom:8px;
-            font-weight:bold;
-            color:#0f172a;
-        }
-
-        .field input,
-        .field select{
-            width:100%;
-            padding:15px;
-            border:1px solid #dbeafe;
-            border-radius:14px;
-            outline:none;
+        .logo p{
+            color:#cbd5e1;
+            margin-top:10px;
             font-size:15px;
         }
 
-        .field input:focus{
-            border-color:#2563eb;
+        .form-errors{
+            background:rgba(220,38,38,.18);
+            border:1px solid rgba(248,113,113,.35);
+            color:#fecaca;
+            padding:16px;
+            border-radius:18px;
+            margin-bottom:22px;
+            font-weight:700;
+            line-height:1.6;
         }
 
-        .btn{
+        .form-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
+        }
+
+        .form-group{
+            display:flex;
+            flex-direction:column;
+        }
+
+        .form-group.full{
+            grid-column:1 / -1;
+        }
+
+        label{
+            margin-bottom:10px;
+            color:white;
+            font-size:14px;
+            font-weight:800;
+        }
+
+        input,
+        select{
             width:100%;
-            padding:16px;
+            padding:17px;
             border:none;
-            border-radius:16px;
+            border-radius:18px;
+            background:rgba(255,255,255,.10);
+            color:white;
+            font-size:15px;
+            outline:none;
+            transition:.25s;
+            border:1px solid transparent;
+        }
+
+        input::placeholder{
+            color:#cbd5e1;
+        }
+
+        input:focus,
+        select:focus{
+            border-color:#60a5fa;
+            background:rgba(255,255,255,.14);
+            box-shadow:0 0 0 4px rgba(96,165,250,.18);
+        }
+
+        option{
+            color:black;
+        }
+
+        .register-btn{
+            width:100%;
+            border:none;
+            padding:18px;
+            border-radius:18px;
             background:linear-gradient(135deg,#2563eb,#1d4ed8);
             color:white;
-            font-size:16px;
-            font-weight:bold;
+            font-size:15px;
+            font-weight:900;
             cursor:pointer;
-            margin-top:10px;
+            transition:.25s;
+            margin-top:26px;
+            box-shadow:0 18px 30px rgba(37,99,235,.30);
         }
 
-        .btn:hover{
-            opacity:.95;
+        .register-btn:hover{
+            transform:translateY(-2px);
         }
 
-        .footer{
-            text-align:center;
+        .links{
             margin-top:24px;
+            text-align:center;
         }
 
-        .footer a{
-            color:#2563eb;
+        .links a{
+            color:#93c5fd;
             text-decoration:none;
-            font-weight:bold;
+            font-weight:800;
+            transition:.25s;
         }
 
-        .errorlist{
-            list-style:none;
-            margin-top:6px;
-            color:#dc2626;
+        .links a:hover{
+            color:white;
+        }
+
+        .footer-text{
+            margin-top:20px;
+            text-align:center;
+            color:#cbd5e1;
             font-size:13px;
+            line-height:1.6;
+        }
+
+        @media(max-width:700px){
+
+            .register-card{
+                margin:20px;
+                padding:30px;
+            }
+
+            .form-grid{
+                grid-template-columns:1fr;
+            }
+
+            .logo h1{
+                font-size:34px;
+            }
+
         }
 
     </style>
+
 </head>
 
 <body>
 
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+
 <div class="register-card">
 
-    <div class="title">
-        <h1>Crear cuenta</h1>
-        <p>Completa los datos para registrarte</p>
+    <div class="logo">
+        <h1>GestionVentas</h1>
+        <p>Registro de usuarios del sistema CRM</p>
     </div>
+
+    {% if form.errors %}
+
+    <div class="form-errors">
+        {{ form.errors }}
+    </div>
+
+    {% endif %}
 
     <form method="post">
 
         {% csrf_token %}
 
-        {% for field in form %}
+        <div class="form-grid">
 
-            <div class="field">
-
-                <label>{{ field.label }}</label>
-
-                {{ field }}
-
-                {{ field.errors }}
-
+            <div class="form-group">
+                <label>Nombre de usuario</label>
+                {{ form.username }}
             </div>
 
-        {% endfor %}
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                {{ form.email }}
+            </div>
 
-        <button type="submit" class="btn">
+            <div class="form-group">
+                <label>Nombre</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label>Apellido</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                {{ form.password1 }}
+            </div>
+
+            <div class="form-group">
+                <label>Confirmar contraseña</label>
+                {{ form.password2 }}
+            </div>
+
+            <div class="form-group full">
+                <label>Rol</label>
+                {{ form.rol }}
+            </div>
+
+        </div>
+
+        <button type="submit" class="register-btn">
             Crear cuenta
         </button>
 
     </form>
 
-    <div class="footer">
+    <div class="links">
 
         <a href="{% url 'login' %}">
-            Volver al login
+            ¿Ya tienes cuenta? Inicia sesión
         </a>
 
+    </div>
+
+    <div class="footer-text">
+        Plataforma CRM para administración de clientes, ventas y seguimientos.
     </div>
 
 </div>

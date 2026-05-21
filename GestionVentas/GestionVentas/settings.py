@@ -151,3 +151,6 @@ LOGIN_URL = '/usuarios/login/'
 LOGIN_REDIRECT_URL = '/ventas/dashboard/'
 
 LOGOUT_REDIRECT_URL = '/usuarios/login/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@gestionventas.com'

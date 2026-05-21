@@ -1,0 +1,205 @@
+<style>
+
+    .chart-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
+        gap:24px;
+        margin-bottom:30px;
+    }
+
+    .chart-card{
+        background:white;
+        border-radius:30px;
+        padding:30px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+    }
+
+    .chart-card h3{
+        font-size:24px;
+        color:#0f172a;
+        margin-bottom:10px;
+    }
+
+    .chart-card p{
+        color:#64748b;
+        margin-bottom:26px;
+        line-height:1.6;
+    }
+
+    .chart-item{
+        margin-bottom:20px;
+    }
+
+    .chart-top{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+        gap:10px;
+    }
+
+    .chart-label{
+        color:#0f172a;
+        font-weight:800;
+        font-size:14px;
+    }
+
+    .chart-value{
+        color:#64748b;
+        font-size:13px;
+        font-weight:800;
+    }
+
+    .chart-bar{
+        width:100%;
+        height:16px;
+        background:#e2e8f0;
+        border-radius:999px;
+        overflow:hidden;
+        position:relative;
+    }
+
+    .chart-fill{
+        height:100%;
+        width:0;
+        border-radius:999px;
+        transition:1.2s ease;
+        background:linear-gradient(90deg,#2563eb,#22c55e);
+    }
+
+    .chart-fill.orange{
+        background:linear-gradient(90deg,#f59e0b,#d97706);
+    }
+
+    .chart-fill.red{
+        background:linear-gradient(90deg,#dc2626,#991b1b);
+    }
+
+    .chart-fill.purple{
+        background:linear-gradient(90deg,#7c3aed,#2563eb);
+    }
+
+    @media(max-width:700px){
+
+        .chart-grid{
+            grid-template-columns:1fr;
+        }
+
+    }
+
+</style>
+
+<div class="chart-grid">
+
+    <div class="chart-card">
+
+        <h3>
+            Ventas por estado
+        </h3>
+
+        <p>
+            Distribución de oportunidades comerciales registradas.
+        </p>
+
+        {% for item in ventas_por_estado %}
+
+        <div class="chart-item">
+
+            <div class="chart-top">
+
+                <div class="chart-label">
+                    {{ item.estado }}
+                </div>
+
+                <div class="chart-value">
+                    {{ item.total }}
+                </div>
+
+            </div>
+
+            <div class="chart-bar">
+
+                <div class="chart-fill"
+                     data-value="{{ item.total }}">
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="chart-card">
+
+        <h3>
+            Clientes activos
+        </h3>
+
+        <p>
+            Estado general de clientes registrados en el sistema.
+        </p>
+
+        {% for item in clientes_por_estado %}
+
+        <div class="chart-item">
+
+            <div class="chart-top">
+
+                <div class="chart-label">
+                    {{ item.estado }}
+                </div>
+
+                <div class="chart-value">
+                    {{ item.total }}
+                </div>
+
+            </div>
+
+            <div class="chart-bar">
+
+                <div class="chart-fill orange"
+                     data-value="{{ item.total }}">
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+
+    const bars = document.querySelectorAll('.chart-fill');
+
+    let max = 1;
+
+    bars.forEach(bar => {
+
+        const value = parseInt(bar.dataset.value);
+
+        if(value > max){
+            max = value;
+        }
+
+    });
+
+    bars.forEach(bar => {
+
+        const value = parseInt(bar.dataset.value);
+
+        const percent = Math.max((value / max) * 100, 8);
+
+        setTimeout(() => {
+            bar.style.width = percent + '%';
+        }, 300);
+
+    });
+
+</script>

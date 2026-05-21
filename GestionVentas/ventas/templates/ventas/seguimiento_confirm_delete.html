@@ -2,53 +2,177 @@
 
 {% block content %}
 <style>
-    .delete-card{max-width:650px;margin:40px auto;background:white;border-radius:28px;box-shadow:0 20px 45px rgba(15,23,42,.12);overflow:hidden}
-    .delete-header{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:white;text-align:center;padding:36px}
-    .delete-header h1{font-size:32px;margin-bottom:8px}
-    .delete-body{padding:34px}
-    .summary{background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:22px;margin-bottom:24px}
-    .summary strong{font-size:20px;color:#0f172a}
-    .summary span{display:block;color:#64748b;margin-top:8px}
-    .check{display:flex;gap:10px;font-weight:bold;margin-bottom:24px}
-    .actions{display:flex;justify-content:space-between;gap:14px}
-    .btn{border:none;padding:14px 22px;border-radius:14px;text-decoration:none;font-weight:bold;cursor:pointer}
-    .cancel{background:#e2e8f0;color:#0f172a}
-    .delete{background:#dc2626;color:white}
-    .delete:disabled{opacity:.5;cursor:not-allowed}
+
+    .delete-container{
+        max-width:720px;
+        margin:60px auto;
+    }
+
+    .delete-card{
+        background:white;
+        border-radius:32px;
+        padding:42px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.10);
+        text-align:center;
+        position:relative;
+        overflow:hidden;
+    }
+
+    .delete-card::before{
+        content:"";
+        position:absolute;
+        width:200px;
+        height:200px;
+        border-radius:50%;
+        background:rgba(220,38,38,.08);
+        top:-70px;
+        right:-70px;
+    }
+
+    .icon{
+        width:110px;
+        height:110px;
+        margin:0 auto 28px;
+        border-radius:50%;
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+        font-size:52px;
+        font-weight:900;
+        box-shadow:0 20px 35px rgba(220,38,38,.25);
+    }
+
+    .delete-card h1{
+        font-size:40px;
+        color:#0f172a;
+        letter-spacing:-1px;
+        margin-bottom:14px;
+    }
+
+    .delete-card p{
+        color:#64748b;
+        font-size:16px;
+        line-height:1.7;
+        max-width:520px;
+        margin:0 auto;
+    }
+
+    .seguimiento-title{
+        margin-top:22px;
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        padding:20px;
+        border-radius:20px;
+        font-size:22px;
+        font-weight:900;
+        color:#0f172a;
+    }
+
+    .warning{
+        margin-top:22px;
+        background:#fee2e2;
+        color:#991b1b;
+        padding:18px;
+        border-radius:18px;
+        font-weight:800;
+    }
+
+    .actions{
+        display:flex;
+        justify-content:center;
+        gap:16px;
+        margin-top:34px;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+        padding:16px 24px;
+        border-radius:18px;
+        text-decoration:none;
+        font-weight:900;
+        border:none;
+        cursor:pointer;
+        transition:.25s;
+        font-size:14px;
+    }
+
+    .btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-danger{
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+        color:white;
+        box-shadow:0 15px 25px rgba(220,38,38,.25);
+    }
+
+    .btn-secondary{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+    @media(max-width:700px){
+
+        .delete-card{
+            padding:28px;
+        }
+
+        .delete-card h1{
+            font-size:34px;
+        }
+
+    }
+
 </style>
 
-<div class="delete-card">
-    <div class="delete-header">
-        <h1>Eliminar seguimiento</h1>
-        <p>Esta acción no se puede deshacer.</p>
-    </div>
+<div class="delete-container">
 
-    <div class="delete-body">
-        <div class="summary">
-            <strong>{{ seguimiento.cliente.nombre }}</strong>
-            <span>Oportunidad: {{ seguimiento.oportunidad.titulo }}</span>
-            <span>Tipo: {{ seguimiento.get_tipo_contacto_display }}</span>
-            <span>Fecha: {{ seguimiento.fecha_contacto|date:"d/m/Y H:i" }}</span>
+    <div class="delete-card">
+
+        <div class="icon">
+            !
+        </div>
+
+        <h1>Eliminar seguimiento</h1>
+
+        <p>
+            Estás a punto de eliminar permanentemente este seguimiento
+            del sistema CRM. Esta acción no se puede deshacer.
+        </p>
+
+        <div class="seguimiento-title">
+            Seguimiento #{{ seguimiento.id }}
+        </div>
+
+        <div class="warning">
+            La información histórica del contacto será eliminada.
         </div>
 
         <form method="post">
+
             {% csrf_token %}
-            <label class="check">
-                <input type="checkbox" id="confirmDelete">
-                Confirmo que deseo eliminar este seguimiento.
-            </label>
 
             <div class="actions">
-                <a href="{% url 'seguimiento_list' %}" class="btn cancel">Cancelar</a>
-                <button type="submit" class="btn delete" id="deleteBtn" disabled>Eliminar definitivamente</button>
+
+                <a href="{% url 'seguimiento_detail' seguimiento.id %}"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Sí, eliminar seguimiento
+                </button>
+
             </div>
+
         </form>
+
     </div>
+
 </div>
 
-<script>
-    const check = document.getElementById("confirmDelete");
-    const btn = document.getElementById("deleteBtn");
-    check.addEventListener("change", () => btn.disabled = !check.checked);
-</script>
 {% endblock %}
