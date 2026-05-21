@@ -28,7 +28,8 @@
         margin-bottom: 30px;
     }
 
-    .card {
+    .card,
+    .panel {
         background: white;
         padding: 26px;
         border-radius: 22px;
@@ -48,16 +49,16 @@
 
     .grid {
         display: grid;
-        grid-template-columns: 1.2fr .8fr;
+        grid-template-columns: 1fr 1fr;
         gap: 24px;
         margin-bottom: 30px;
     }
 
-    .panel {
-        background: white;
-        padding: 28px;
-        border-radius: 22px;
-        box-shadow: 0 20px 45px rgba(15,23,42,.08);
+    .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 30px;
     }
 
     .panel h3 {
@@ -75,6 +76,7 @@
         justify-content: space-between;
         font-weight: bold;
         margin-bottom: 8px;
+        color: #0f172a;
     }
 
     .bar {
@@ -90,6 +92,14 @@
         border-radius: 999px;
         background: linear-gradient(90deg, #2563eb, #22c55e);
         transition: 1s;
+    }
+
+    .fill.orange {
+        background: linear-gradient(90deg, #f59e0b, #ef4444);
+    }
+
+    .fill.purple {
+        background: linear-gradient(90deg, #7c3aed, #2563eb);
     }
 
     table {
@@ -136,12 +146,44 @@
         color: #991b1b;
     }
 
-    @media(max-width: 1100px) {
+    .reminder {
+        padding: 16px;
+        border-radius: 16px;
+        margin-bottom: 14px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .reminder strong {
+        display: block;
+        color: #0f172a;
+        margin-bottom: 5px;
+    }
+
+    .reminder span {
+        color: #64748b;
+        font-size: 14px;
+        display: block;
+        margin-top: 3px;
+    }
+
+    .reminder.danger {
+        background: #fee2e2;
+        border-color: #fecaca;
+    }
+
+    .reminder.warning {
+        background: #fef3c7;
+        border-color: #fde68a;
+    }
+
+    @media(max-width: 1200px) {
         .cards {
             grid-template-columns: repeat(2, 1fr);
         }
 
-        .grid {
+        .grid,
+        .grid-3 {
             grid-template-columns: 1fr;
         }
     }
@@ -154,6 +196,14 @@
         .dashboard-container {
             padding: 20px;
         }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            min-width: 650px;
+        }
     }
 </style>
 
@@ -161,7 +211,7 @@
 
     <div class="dashboard-title">
         <h1>Dashboard Comercial</h1>
-        <p>Resumen general del CRM con datos reales del sistema</p>
+        <p>Resumen general del CRM con KPIs, gráficos, recordatorios y estadísticas reales.</p>
     </div>
 
     <div class="cards">
@@ -208,34 +258,107 @@
         </div>
 
         <div class="panel">
-            <h3>Indicadores de clientes</h3>
+            <h3>Clientes activos e inactivos</h3>
 
-            <table>
-                <tr>
-                    <th>Indicador</th>
-                    <th>Total</th>
-                </tr>
+            {% for item in clientes_por_estado %}
+                <div class="chart-item">
+                    <div class="chart-top">
+                        <span>{{ item.estado }}</span>
+                        <span>{{ item.total }}</span>
+                    </div>
 
-                <tr>
-                    <td>Clientes activos</td>
-                    <td>{{ clientes_activos }}</td>
-                </tr>
+                    <div class="bar">
+                        <div class="fill orange" data-value="{{ item.total }}"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-                <tr>
-                    <td>Clientes inactivos</td>
-                    <td>{{ clientes_inactivos }}</td>
-                </tr>
+    </div>
 
-                <tr>
-                    <td>Seguimientos</td>
-                    <td>{{ seguimientos }}</td>
-                </tr>
+    <div class="grid">
 
-                <tr>
-                    <td>Ventas perdidas</td>
-                    <td>{{ ventas_perdidas }}</td>
-                </tr>
-            </table>
+        <div class="panel">
+            <h3>Ventas por mes</h3>
+
+            {% for item in ventas_por_mes %}
+                <div class="chart-item">
+                    <div class="chart-top">
+                        <span>{{ item.mes|date:"M Y" }}</span>
+                        <span>{{ item.total }} ventas - ${{ item.ingresos|default:0 }}</span>
+                    </div>
+
+                    <div class="bar">
+                        <div class="fill purple" data-value="{{ item.total }}"></div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay ventas mensuales registradas.</p>
+            {% endfor %}
+        </div>
+
+        <div class="panel">
+            <h3>Top vendedores</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vendedor</th>
+                            <th>Ventas</th>
+                            <th>Ingresos</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for vendedor in ventas_por_vendedor %}
+                            <tr>
+                                <td>{{ vendedor.vendedor__username|default:"Sin asignar" }}</td>
+                                <td>{{ vendedor.total }}</td>
+                                <td>${{ vendedor.ingresos|default:0 }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">No hay vendedores con ventas.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid">
+
+        <div class="panel">
+            <h3>Recordatorios vencidos</h3>
+
+            {% for recordatorio in recordatorios_vencidos %}
+                <div class="reminder danger">
+                    <strong>{{ recordatorio.cliente.nombre }}</strong>
+                    <span>Oportunidad: {{ recordatorio.oportunidad.titulo }}</span>
+                    <span>Fecha vencida: {{ recordatorio.proximo_contacto|date:"d/m/Y" }}</span>
+                    <span>Tipo: {{ recordatorio.get_tipo_contacto_display }}</span>
+                </div>
+            {% empty %}
+                <p>No hay recordatorios vencidos.</p>
+            {% endfor %}
+        </div>
+
+        <div class="panel">
+            <h3>Próximos recordatorios</h3>
+
+            {% for recordatorio in recordatorios_proximos %}
+                <div class="reminder warning">
+                    <strong>{{ recordatorio.cliente.nombre }}</strong>
+                    <span>Oportunidad: {{ recordatorio.oportunidad.titulo }}</span>
+                    <span>Próximo contacto: {{ recordatorio.proximo_contacto|date:"d/m/Y" }}</span>
+                    <span>Tipo: {{ recordatorio.get_tipo_contacto_display }}</span>
+                </div>
+            {% empty %}
+                <p>No hay recordatorios próximos.</p>
+            {% endfor %}
         </div>
 
     </div>
@@ -243,35 +366,45 @@
     <div class="panel">
         <h3>Ventas recientes</h3>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Cliente</th>
-                    <th>Monto</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Cliente</th>
+                        <th>Vendedor</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                {% for venta in ventas_recientes %}
-                    <tr>
-                        <td>{{ venta.titulo }}</td>
-                        <td>{{ venta.cliente.nombre }}</td>
-                        <td>${{ venta.monto }}</td>
-                        <td>
-                            <span class="badge {{ venta.estado }}">
-                                {{ venta.get_estado_display }}
-                            </span>
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="4">No hay ventas recientes.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                <tbody>
+                    {% for venta in ventas_recientes %}
+                        <tr>
+                            <td>{{ venta.titulo }}</td>
+                            <td>{{ venta.cliente.nombre }}</td>
+                            <td>
+                                {% if venta.vendedor %}
+                                    {{ venta.vendedor.username }}
+                                {% else %}
+                                    Sin asignar
+                                {% endif %}
+                            </td>
+                            <td>${{ venta.monto }}</td>
+                            <td>
+                                <span class="badge {{ venta.estado }}">
+                                    {{ venta.get_estado_display }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">No hay ventas recientes.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>

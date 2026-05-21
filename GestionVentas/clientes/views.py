@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 from .models import Cliente
 from .forms import ClienteForm
@@ -15,10 +16,11 @@ def cliente_list(request):
     clientes = Cliente.objects.all().order_by('-fecha_registro')
 
     if query:
-        clientes = (
-            clientes.filter(nombre__icontains=query) |
-            clientes.filter(documento__icontains=query) |
-            clientes.filter(correo__icontains=query)
+        clientes = clientes.filter(
+            Q(nombre__icontains=query) |
+            Q(documento__icontains=query) |
+            Q(correo__icontains=query) |
+            Q(id__icontains=query)
         )
 
     if estado:
