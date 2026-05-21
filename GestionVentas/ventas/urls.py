@@ -15,12 +15,4 @@ urlpatterns = [
     path('seguimientos/<int:pk>/', views.seguimiento_detail, name='seguimiento_detail'),
     path('seguimientos/<int:pk>/editar/', views.seguimiento_update, name='seguimiento_update'),
     path('seguimientos/<int:pk>/eliminar/', views.seguimiento_delete, name='seguimiento_delete'),
-    
-    # APIs para datos de gráficos
-    path('api/dashboard-data/', views.dashboard_data, name='dashboard_data'),
-    
-    # Exportación de reportes
-    path('exportar/ventas/pdf/', views.exportar_ventas_pdf, name='exportar_ventas_pdf'),
-    path('exportar/ventas/excel/', views.exportar_ventas_excel, name='exportar_ventas_excel'),
-    path('exportar/clientes/pdf/', views.exportar_clientes_pdf, name='exportar_clientes_pdf'),
 ]
