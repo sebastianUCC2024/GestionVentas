@@ -1,7 +1,12 @@
+from datetime import timedelta
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Sum, Count
+from django.db.models.functions import TruncMonth
+from django.utils import timezone
+from django.core.mail import send_mail
 
 from clientes.models import Cliente
 from .models import OportunidadVenta, Seguimiento
@@ -21,6 +26,7 @@ def venta_list(request):
 
     if query:
         ventas = ventas.filter(
+            Q(id__icontains=query) |
             Q(titulo__icontains=query) |
             Q(cliente__nombre__icontains=query) |
             Q(cliente__documento__icontains=query)
@@ -135,7 +141,9 @@ def seguimiento_list(request):
 
     if query:
         seguimientos = seguimientos.filter(
+            Q(id__icontains=query) |
             Q(cliente__nombre__icontains=query) |
+            Q(cliente__documento__icontains=query) |
             Q(oportunidad__titulo__icontains=query) |
             Q(observaciones__icontains=query)
         )
@@ -186,6 +194,23 @@ def seguimiento_create(request):
                 seguimiento.usuario = request.user
 
             seguimiento.save()
+
+            if seguimiento.cliente.correo:
+                send_mail(
+                    subject='Nuevo seguimiento registrado',
+                    message=(
+                        f'Hola {seguimiento.cliente.nombre},\n\n'
+                        f'Se ha registrado un nuevo seguimiento en el sistema GestionVentas.\n'
+                        f'Tipo de contacto: {seguimiento.get_tipo_contacto_display()}\n'
+                        f'Oportunidad: {seguimiento.oportunidad.titulo}\n'
+                        f'Próximo contacto: {seguimiento.proximo_contacto or "No definido"}\n\n'
+                        f'Observaciones:\n{seguimiento.observaciones}'
+                    ),
+                    from_email='noreply@gestionventas.com',
+                    recipient_list=[seguimiento.cliente.correo],
+                    fail_silently=True,
+                )
+
             messages.success(request, 'Seguimiento registrado correctamente.')
             return redirect('seguimiento_list')
     else:
@@ -234,6 +259,9 @@ def seguimiento_delete(request, pk):
 
 @login_required
 def ventas_dashboard(request):
+    hoy = timezone.now().date()
+    limite = hoy + timedelta(days=7)
+
     total_clientes = Cliente.objects.count()
     total_ventas = OportunidadVenta.objects.count()
 
@@ -263,13 +291,66 @@ def ventas_dashboard(request):
         OportunidadVenta.objects
         .values('estado')
         .annotate(total=Count('id'))
+        .order_by('estado')
     )
 
     ventas_recientes = (
         OportunidadVenta.objects
-        .select_related('cliente')
+        .select_related('cliente', 'vendedor')
         .order_by('-fecha_creacion')[:5]
     )
+
+    recordatorios_proximos = (
+        Seguimiento.objects
+        .filter(
+            completado=False,
+            proximo_contacto__range=[hoy, limite]
+        )
+        .select_related('cliente', 'oportunidad', 'usuario')
+        .order_by('proximo_contacto')[:6]
+    )
+
+    recordatorios_vencidos = (
+        Seguimiento.objects
+        .filter(
+            completado=False,
+            proximo_contacto__lt=hoy
+        )
+        .select_related('cliente', 'oportunidad', 'usuario')
+        .order_by('proximo_contacto')[:6]
+    )
+
+    ventas_por_vendedor = (
+        OportunidadVenta.objects
+        .values('vendedor__username')
+        .annotate(
+            total=Count('id'),
+            ingresos=Sum('monto')
+        )
+        .order_by('-total')[:5]
+    )
+
+    ventas_por_mes = (
+        OportunidadVenta.objects
+        .annotate(mes=TruncMonth('fecha_creacion'))
+        .values('mes')
+        .annotate(
+            total=Count('id'),
+            ingresos=Sum('monto')
+        )
+        .order_by('mes')
+    )
+
+    clientes_por_estado = [
+        {
+            'estado': 'Activos',
+            'total': clientes_activos
+        },
+        {
+            'estado': 'Inactivos',
+            'total': clientes_inactivos
+        }
+    ]
 
     return render(request, 'ventas/ventas_dashboard.html', {
         'total_clientes': total_clientes,
@@ -282,4 +363,9 @@ def ventas_dashboard(request):
         'clientes_inactivos': clientes_inactivos,
         'ventas_por_estado': ventas_por_estado,
         'ventas_recientes': ventas_recientes,
+        'recordatorios_proximos': recordatorios_proximos,
+        'recordatorios_vencidos': recordatorios_vencidos,
+        'ventas_por_vendedor': ventas_por_vendedor,
+        'ventas_por_mes': ventas_por_mes,
+        'clientes_por_estado': clientes_por_estado,
     })
