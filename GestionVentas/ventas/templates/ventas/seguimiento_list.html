@@ -249,9 +249,21 @@
 
     {% if user.rol == 'VENDEDOR' or user.rol == 'ADMIN' %}
 
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+
+    {% if user.rol == 'VENDEDOR' or user.rol == 'ADMIN' %}
+
     <a href="{% url 'seguimiento_create' %}" class="btn-main">
         Nuevo seguimiento
     </a>
+
+    <a href="{% url 'reporte_seguimientos_pdf' %}" class="btn-main">
+        Descargar reporte PDF
+    </a>
+
+    {% endif %}
+
+</div>
 
     {% endif %}
 

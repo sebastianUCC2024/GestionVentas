@@ -51,30 +51,33 @@ class SeguimientoForm(forms.ModelForm):
     class Meta:
         model = Seguimiento
         fields = [
-            'oportunidad',
             'cliente',
+            'oportunidad',
             'usuario',
             'tipo_contacto',
-            'observaciones',
+            'fecha_contacto',
             'proximo_contacto',
+            'observaciones',
             'completado',
         ]
 
         widgets = {
-            'oportunidad': forms.Select(attrs={'class': 'input-control'}),
-            'cliente': forms.Select(attrs={'class': 'input-control'}),
-            'usuario': forms.Select(attrs={'class': 'input-control'}),
-            'tipo_contacto': forms.Select(attrs={'class': 'input-control'}),
+            'fecha_contacto': forms.DateTimeInput(
+                attrs={
+                    'type': 'datetime-local'
+                },
+                format='%Y-%m-%dT%H:%M'
+            ),
+            'proximo_contacto': forms.DateInput(
+                attrs={
+                    'type': 'date'
+                },
+                format='%Y-%m-%d'
+            ),
             'observaciones': forms.Textarea(attrs={
-                'class': 'input-control',
-                'rows': 4,
-                'placeholder': 'Escribe las observaciones del contacto'
+                'placeholder': 'Escribe las observaciones del contacto',
+                'rows': 5
             }),
-            'proximo_contacto': forms.DateInput(attrs={
-                'class': 'input-control',
-                'type': 'date'
-            }),
-            'completado': forms.CheckboxInput(attrs={'class': 'checkbox-control'}),
         }
 class PedidoForm(forms.ModelForm):
  class Meta:

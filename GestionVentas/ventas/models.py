@@ -83,7 +83,7 @@ class Seguimiento(models.Model):
     )
 
     observaciones = models.TextField()
-    fecha_contacto = models.DateTimeField(auto_now_add=True)
+    fecha_contacto = models.DateTimeField()
     proximo_contacto = models.DateField(blank=True, null=True)
     completado = models.BooleanField(default=False)
 
