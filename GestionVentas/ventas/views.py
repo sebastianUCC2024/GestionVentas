@@ -12,6 +12,8 @@ from clientes.models import Cliente
 from .models import OportunidadVenta, Seguimiento
 from .forms import OportunidadVentaForm, SeguimientoForm
 from users.decorators import vendedor_required, admin_required
+from .models import Pedido
+from .forms import PedidoForm, PedidoEstadoForm
 
 
 @login_required
@@ -353,4 +355,74 @@ def ventas_dashboard(request):
         'recordatorios_vencidos': recordatorios_vencidos,
         'ventas_recientes': ventas_recientes,
         'clientes_por_estado': clientes_por_estado,
+    })
+
+@login_required
+def pedido_list(request):
+    pedidos = Pedido.objects.select_related('cliente_usuario').all().order_by('-fecha_pedido')
+
+    if request.user.rol == 'CLIENTE':
+        pedidos = pedidos.filter(cliente_usuario=request.user)
+
+    query = request.GET.get('q')
+
+    if query:
+        pedidos = pedidos.filter(
+            Q(producto__icontains=query) |
+            Q(descripcion__icontains=query) |
+            Q(cliente_usuario__username__icontains=query) |
+            Q(id__icontains=query)
+        )
+
+    return render(request, 'ventas/pedido_list.html', {
+        'pedidos': pedidos,
+        'query': query
+    })
+
+
+@login_required
+def pedido_create(request):
+    if request.user.rol != 'CLIENTE':
+        messages.error(request, 'Solo los clientes pueden realizar pedidos.')
+        return redirect('pedido_list')
+
+    if request.method == 'POST':
+        form = PedidoForm(request.POST)
+
+        if form.is_valid():
+            pedido = form.save(commit=False)
+            pedido.cliente_usuario = request.user
+            pedido.save()
+
+            messages.success(request, 'Pedido realizado correctamente.')
+            return redirect('pedido_list')
+    else:
+        form = PedidoForm()
+
+    return render(request, 'ventas/pedido_form.html', {
+        'form': form
+    })
+
+
+@login_required
+def pedido_update_estado(request, pk):
+    if request.user.rol not in ['VENDEDOR', 'ADMIN']:
+        messages.error(request, 'No tienes permisos para actualizar pedidos.')
+        return redirect('pedido_list')
+
+    pedido = get_object_or_404(Pedido, pk=pk)
+
+    if request.method == 'POST':
+        form = PedidoEstadoForm(request.POST, instance=pedido)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Estado del pedido actualizado correctamente.')
+            return redirect('pedido_list')
+    else:
+        form = PedidoEstadoForm(instance=pedido)
+
+    return render(request, 'ventas/pedido_estado_form.html', {
+        'form': form,
+        'pedido': pedido
     })

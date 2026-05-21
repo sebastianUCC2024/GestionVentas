@@ -268,12 +268,14 @@
                 {% if user.rol == 'CLIENTE' %}
                     <a href="{% url 'cliente_list' %}">Clientes</a>
                     <a href="{% url 'venta_list' %}">Ventas</a>
+                    <a href="{% url 'pedido_list' %}">Pedidos</a>
                 {% endif %}
 
                 {% if user.rol == 'VENDEDOR' %}
                     <a href="{% url 'cliente_list' %}">Clientes</a>
                     <a href="{% url 'venta_list' %}">Ventas</a>
                     <a href="{% url 'seguimiento_list' %}">Seguimientos</a>
+                    <a href="{% url 'pedido_list' %}">Pedidos</a>
                     <a href="{% url 'ventas_dashboard' %}">Dashboard</a>
                 {% endif %}
 
@@ -281,6 +283,7 @@
                     <a href="{% url 'cliente_list' %}">Clientes</a>
                     <a href="{% url 'venta_list' %}">Ventas</a>
                     <a href="{% url 'seguimiento_list' %}">Seguimientos</a>
+                    <a href="{% url 'pedido_list' %}">Pedidos</a>
                     <a href="{% url 'ventas_dashboard' %}">Dashboard</a>
                     <a href="{% url 'reporte_clientes_pdf' %}">Reporte PDF</a>
                     <a href="{% url 'reporte_ventas_excel' %}">Reporte Excel</a>
@@ -353,6 +356,7 @@
     }
 
     const currentPath = window.location.pathname;
+
     document.querySelectorAll(".menu a").forEach(link => {
         if (link.getAttribute("href") === currentPath) {
             link.classList.add("active");

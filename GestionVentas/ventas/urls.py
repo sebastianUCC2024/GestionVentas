@@ -15,4 +15,7 @@ urlpatterns = [
     path('seguimientos/<int:pk>/', views.seguimiento_detail, name='seguimiento_detail'),
     path('seguimientos/<int:pk>/editar/', views.seguimiento_update, name='seguimiento_update'),
     path('seguimientos/<int:pk>/eliminar/', views.seguimiento_delete, name='seguimiento_delete'),
+    path('pedidos/', views.pedido_list, name='pedido_list'),
+path('pedidos/crear/', views.pedido_create, name='pedido_create'),
+path('pedidos/<int:pk>/estado/', views.pedido_update_estado, name='pedido_update_estado'),
 ]
