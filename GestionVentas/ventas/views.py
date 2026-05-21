@@ -223,7 +223,10 @@ def seguimiento_create(request):
             messages.success(request, 'Seguimiento registrado correctamente.')
             return redirect('seguimiento_list')
     else:
-        form = SeguimientoForm()
+        form = SeguimientoForm(initial={
+    'usuario': request.user,
+    'fecha_contacto': timezone.now().strftime('%Y-%m-%dT%H:%M')
+})
 
     return render(request, 'ventas/seguimiento_form.html', {
         'form': form
@@ -254,7 +257,12 @@ def seguimiento_update(request, pk):
             messages.success(request, 'Seguimiento actualizado correctamente.')
             return redirect('seguimiento_list')
     else:
-        form = SeguimientoForm(instance=seguimiento)
+        form = SeguimientoForm(
+    instance=seguimiento,
+    initial={
+        'fecha_contacto': seguimiento.fecha_contacto.strftime('%Y-%m-%dT%H:%M')
+    }
+)
 
     return render(request, 'ventas/seguimiento_form.html', {
         'form': form,
