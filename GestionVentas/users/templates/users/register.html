@@ -23,32 +23,7 @@
                 radial-gradient(circle at top left,#2563eb 0%,transparent 35%),
                 radial-gradient(circle at bottom right,#22c55e 0%,transparent 35%),
                 #0f172a;
-            overflow:hidden;
-            position:relative;
             padding:30px 0;
-        }
-
-        .bg-shape{
-            position:absolute;
-            border-radius:50%;
-            filter:blur(70px);
-            opacity:.25;
-        }
-
-        .shape1{
-            width:320px;
-            height:320px;
-            background:#2563eb;
-            top:-80px;
-            left:-80px;
-        }
-
-        .shape2{
-            width:300px;
-            height:300px;
-            background:#22c55e;
-            bottom:-90px;
-            right:-90px;
         }
 
         .register-card{
@@ -60,8 +35,6 @@
             border-radius:36px;
             padding:42px;
             box-shadow:0 25px 60px rgba(0,0,0,.30);
-            position:relative;
-            z-index:10;
         }
 
         .logo{
@@ -73,24 +46,11 @@
             color:white;
             font-size:42px;
             font-weight:900;
-            letter-spacing:-1px;
         }
 
         .logo p{
             color:#cbd5e1;
             margin-top:10px;
-            font-size:15px;
-        }
-
-        .form-errors{
-            background:rgba(220,38,38,.18);
-            border:1px solid rgba(248,113,113,.35);
-            color:#fecaca;
-            padding:16px;
-            border-radius:18px;
-            margin-bottom:22px;
-            font-weight:700;
-            line-height:1.6;
         }
 
         .form-grid{
@@ -104,44 +64,25 @@
             flex-direction:column;
         }
 
-        .form-group.full{
+        .full{
             grid-column:1 / -1;
         }
 
         label{
             margin-bottom:10px;
             color:white;
-            font-size:14px;
             font-weight:800;
         }
 
         input,
         select{
             width:100%;
-            padding:17px;
+            padding:16px;
             border:none;
             border-radius:18px;
             background:rgba(255,255,255,.10);
             color:white;
-            font-size:15px;
             outline:none;
-            transition:.25s;
-            border:1px solid transparent;
-        }
-
-        input::placeholder{
-            color:#cbd5e1;
-        }
-
-        input:focus,
-        select:focus{
-            border-color:#60a5fa;
-            background:rgba(255,255,255,.14);
-            box-shadow:0 0 0 4px rgba(96,165,250,.18);
-        }
-
-        option{
-            color:black;
         }
 
         .register-btn{
@@ -151,20 +92,13 @@
             border-radius:18px;
             background:linear-gradient(135deg,#2563eb,#1d4ed8);
             color:white;
-            font-size:15px;
             font-weight:900;
             cursor:pointer;
-            transition:.25s;
-            margin-top:26px;
-            box-shadow:0 18px 30px rgba(37,99,235,.30);
-        }
-
-        .register-btn:hover{
-            transform:translateY(-2px);
+            margin-top:24px;
         }
 
         .links{
-            margin-top:24px;
+            margin-top:22px;
             text-align:center;
         }
 
@@ -172,36 +106,6 @@
             color:#93c5fd;
             text-decoration:none;
             font-weight:800;
-            transition:.25s;
-        }
-
-        .links a:hover{
-            color:white;
-        }
-
-        .footer-text{
-            margin-top:20px;
-            text-align:center;
-            color:#cbd5e1;
-            font-size:13px;
-            line-height:1.6;
-        }
-
-        @media(max-width:700px){
-
-            .register-card{
-                margin:20px;
-                padding:30px;
-            }
-
-            .form-grid{
-                grid-template-columns:1fr;
-            }
-
-            .logo h1{
-                font-size:34px;
-            }
-
         }
 
     </style>
@@ -210,23 +114,17 @@
 
 <body>
 
-<div class="bg-shape shape1"></div>
-<div class="bg-shape shape2"></div>
-
 <div class="register-card">
 
     <div class="logo">
+
         <h1>GestionVentas</h1>
-        <p>Registro de usuarios del sistema CRM</p>
+
+        <p>
+            Registro de usuarios
+        </p>
+
     </div>
-
-    {% if form.errors %}
-
-    <div class="form-errors">
-        {{ form.errors }}
-    </div>
-
-    {% endif %}
 
     <form method="post">
 
@@ -235,12 +133,12 @@
         <div class="form-grid">
 
             <div class="form-group">
-                <label>Nombre de usuario</label>
+                <label>Usuario</label>
                 {{ form.username }}
             </div>
 
             <div class="form-group">
-                <label>Correo electrónico</label>
+                <label>Correo</label>
                 {{ form.email }}
             </div>
 
@@ -264,11 +162,6 @@
                 {{ form.password2 }}
             </div>
 
-            <div class="form-group full">
-                <label>Rol</label>
-                {{ form.rol }}
-            </div>
-
         </div>
 
         <button type="submit" class="register-btn">
@@ -280,13 +173,9 @@
     <div class="links">
 
         <a href="{% url 'login' %}">
-            ¿Ya tienes cuenta? Inicia sesión
+            Ya tengo cuenta
         </a>
 
-    </div>
-
-    <div class="footer-text">
-        Plataforma CRM para administración de clientes, ventas y seguimientos.
     </div>
 
 </div>
