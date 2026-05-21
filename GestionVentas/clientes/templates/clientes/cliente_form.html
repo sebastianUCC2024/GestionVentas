@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+    .form-container{
+        max-width:900px;
+        margin:0 auto;
+    }
+
+    .form-header{
+        margin-bottom:28px;
+    }
+
+    .form-header h1{
+        font-size:38px;
+        color:#0f172a;
+        letter-spacing:-1px;
+    }
+
+    .form-header p{
+        color:#64748b;
+        margin-top:8px;
+    }
+
+    .form-card{
+        background:white;
+        border-radius:28px;
+        padding:34px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 20px 45px rgba(15,23,42,.08);
+    }
+
+    .form-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:22px;
+    }
+
+    .form-group{
+        display:flex;
+        flex-direction:column;
+    }
+
+    .form-group.full{
+        grid-column:1 / -1;
+    }
+
+    label{
+        margin-bottom:10px;
+        font-weight:800;
+        color:#0f172a;
+        font-size:14px;
+    }
+
+    input,
+    select,
+    textarea{
+        width:100%;
+        padding:16px;
+        border:1px solid #dbe3ec;
+        border-radius:18px;
+        background:#f8fafc;
+        font-size:15px;
+        outline:none;
+        transition:.25s;
+    }
+
+    textarea{
+        resize:none;
+        min-height:120px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus{
+        border-color:#2563eb;
+        background:white;
+        box-shadow:0 0 0 4px rgba(37,99,235,.10);
+    }
+
+    .form-errors{
+        margin-bottom:24px;
+        background:#fee2e2;
+        color:#991b1b;
+        padding:18px;
+        border-radius:18px;
+        font-weight:700;
+    }
+
+    .actions{
+        margin-top:30px;
+        display:flex;
+        justify-content:flex-end;
+        gap:14px;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+        padding:16px 22px;
+        border-radius:18px;
+        text-decoration:none;
+        font-weight:900;
+        border:none;
+        cursor:pointer;
+        transition:.25s;
+        font-size:14px;
+    }
+
+    .btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-primary{
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+        color:white;
+        box-shadow:0 15px 25px rgba(37,99,235,.25);
+    }
+
+    .btn-secondary{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+    @media(max-width:850px){
+
+        .form-grid{
+            grid-template-columns:1fr;
+        }
+
+        .form-card{
+            padding:24px;
+        }
+
+    }
+
+</style>
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        {% if cliente %}
+            <h1>Editar cliente</h1>
+            <p>Actualiza la información del cliente.</p>
+        {% else %}
+            <h1>Nuevo cliente</h1>
+            <p>Registra un nuevo cliente en el sistema.</p>
+        {% endif %}
+
+    </div>
+
+    <div class="form-card">
+
+        {% if form.errors %}
+
+        <div class="form-errors">
+            <strong>Se encontraron errores en el formulario.</strong>
+            {{ form.errors }}
+        </div>
+
+        {% endif %}
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Nombre completo</label>
+                    {{ form.nombre }}
+                </div>
+
+                <div class="form-group">
+                    <label>Documento</label>
+                    {{ form.documento }}
+                </div>
+
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    {{ form.correo }}
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    {{ form.telefono }}
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    {{ form.estado }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Dirección</label>
+                    {{ form.direccion }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Observaciones</label>
+                    {{ form.observaciones }}
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <a href="{% url 'cliente_list' %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+
+                    {% if cliente %}
+                        Actualizar cliente
+                    {% else %}
+                        Guardar cliente
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

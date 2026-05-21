@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+    .form-container{
+        max-width:950px;
+        margin:0 auto;
+    }
+
+    .form-header{
+        margin-bottom:28px;
+    }
+
+    .form-header h1{
+        font-size:40px;
+        color:#0f172a;
+        letter-spacing:-1px;
+    }
+
+    .form-header p{
+        margin-top:8px;
+        color:#64748b;
+    }
+
+    .form-card{
+        background:white;
+        border-radius:30px;
+        padding:34px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+    }
+
+    .form-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:22px;
+    }
+
+    .form-group{
+        display:flex;
+        flex-direction:column;
+    }
+
+    .form-group.full{
+        grid-column:1 / -1;
+    }
+
+    label{
+        margin-bottom:10px;
+        font-size:14px;
+        font-weight:900;
+        color:#0f172a;
+    }
+
+    input,
+    select,
+    textarea{
+        width:100%;
+        padding:16px;
+        border:1px solid #dbe3ec;
+        border-radius:18px;
+        background:#f8fafc;
+        font-size:15px;
+        outline:none;
+        transition:.25s;
+    }
+
+    textarea{
+        resize:none;
+        min-height:140px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus{
+        border-color:#2563eb;
+        background:white;
+        box-shadow:0 0 0 4px rgba(37,99,235,.10);
+    }
+
+    .form-errors{
+        margin-bottom:24px;
+        background:#fee2e2;
+        color:#991b1b;
+        padding:18px;
+        border-radius:18px;
+        font-weight:700;
+    }
+
+    .actions{
+        margin-top:32px;
+        display:flex;
+        justify-content:flex-end;
+        gap:14px;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+        padding:16px 24px;
+        border-radius:18px;
+        border:none;
+        cursor:pointer;
+        font-size:14px;
+        font-weight:900;
+        text-decoration:none;
+        transition:.25s;
+    }
+
+    .btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-primary{
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+        color:white;
+        box-shadow:0 15px 25px rgba(37,99,235,.25);
+    }
+
+    .btn-secondary{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+    @media(max-width:850px){
+
+        .form-grid{
+            grid-template-columns:1fr;
+        }
+
+        .form-card{
+            padding:24px;
+        }
+
+    }
+
+</style>
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        {% if venta %}
+            <h1>Editar venta</h1>
+            <p>Actualiza la información de la oportunidad comercial.</p>
+        {% else %}
+            <h1>Nueva venta</h1>
+            <p>Registra una nueva oportunidad de venta en el sistema.</p>
+        {% endif %}
+
+    </div>
+
+    <div class="form-card">
+
+        {% if form.errors %}
+
+        <div class="form-errors">
+            <strong>Se encontraron errores en el formulario.</strong>
+            {{ form.errors }}
+        </div>
+
+        {% endif %}
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+                    <label>Título de la venta</label>
+                    {{ form.titulo }}
+                </div>
+
+                <div class="form-group">
+                    <label>Cliente</label>
+                    {{ form.cliente }}
+                </div>
+
+                <div class="form-group">
+                    <label>Vendedor</label>
+                    {{ form.vendedor }}
+                </div>
+
+                <div class="form-group">
+                    <label>Monto</label>
+                    {{ form.monto }}
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    {{ form.estado }}
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha cierre estimada</label>
+                    {{ form.fecha_cierre_estimada }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Descripción</label>
+                    {{ form.descripcion }}
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <a href="{% url 'venta_list' %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+
+                    {% if venta %}
+                        Actualizar venta
+                    {% else %}
+                        Guardar venta
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

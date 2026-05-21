@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+    .form-container{
+        max-width:950px;
+        margin:0 auto;
+    }
+
+    .form-header{
+        margin-bottom:28px;
+    }
+
+    .form-header h1{
+        font-size:40px;
+        color:#0f172a;
+        letter-spacing:-1px;
+    }
+
+    .form-header p{
+        margin-top:8px;
+        color:#64748b;
+    }
+
+    .form-card{
+        background:white;
+        border-radius:30px;
+        padding:34px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+    }
+
+    .form-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:22px;
+    }
+
+    .form-group{
+        display:flex;
+        flex-direction:column;
+    }
+
+    .form-group.full{
+        grid-column:1 / -1;
+    }
+
+    label{
+        margin-bottom:10px;
+        font-size:14px;
+        font-weight:900;
+        color:#0f172a;
+    }
+
+    input,
+    select,
+    textarea{
+        width:100%;
+        padding:16px;
+        border:1px solid #dbe3ec;
+        border-radius:18px;
+        background:#f8fafc;
+        font-size:15px;
+        outline:none;
+        transition:.25s;
+    }
+
+    textarea{
+        resize:none;
+        min-height:150px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus{
+        border-color:#2563eb;
+        background:white;
+        box-shadow:0 0 0 4px rgba(37,99,235,.10);
+    }
+
+    .form-errors{
+        margin-bottom:24px;
+        background:#fee2e2;
+        color:#991b1b;
+        padding:18px;
+        border-radius:18px;
+        font-weight:700;
+    }
+
+    .actions{
+        margin-top:32px;
+        display:flex;
+        justify-content:flex-end;
+        gap:14px;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+        padding:16px 24px;
+        border-radius:18px;
+        border:none;
+        cursor:pointer;
+        font-size:14px;
+        font-weight:900;
+        text-decoration:none;
+        transition:.25s;
+    }
+
+    .btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-primary{
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+        color:white;
+        box-shadow:0 15px 25px rgba(37,99,235,.25);
+    }
+
+    .btn-secondary{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+    .help-box{
+        margin-top:26px;
+        padding:20px;
+        border-radius:20px;
+        background:#eff6ff;
+        border:1px solid #bfdbfe;
+    }
+
+    .help-box h4{
+        margin-bottom:10px;
+        color:#1d4ed8;
+        font-size:16px;
+    }
+
+    .help-box p{
+        color:#334155;
+        line-height:1.7;
+        font-weight:600;
+    }
+
+    @media(max-width:850px){
+
+        .form-grid{
+            grid-template-columns:1fr;
+        }
+
+        .form-card{
+            padding:24px;
+        }
+
+    }
+
+</style>
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        {% if seguimiento %}
+            <h1>Editar seguimiento</h1>
+            <p>Actualiza la información del contacto realizado.</p>
+        {% else %}
+            <h1>Nuevo seguimiento</h1>
+            <p>Registra un nuevo contacto o seguimiento comercial.</p>
+        {% endif %}
+
+    </div>
+
+    <div class="form-card">
+
+        {% if form.errors %}
+
+        <div class="form-errors">
+            <strong>Se encontraron errores en el formulario.</strong>
+            {{ form.errors }}
+        </div>
+
+        {% endif %}
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Cliente</label>
+                    {{ form.cliente }}
+                </div>
+
+                <div class="form-group">
+                    <label>Oportunidad de venta</label>
+                    {{ form.oportunidad }}
+                </div>
+
+                <div class="form-group">
+                    <label>Usuario responsable</label>
+                    {{ form.usuario }}
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de contacto</label>
+                    {{ form.tipo_contacto }}
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha del contacto</label>
+                    {{ form.fecha_contacto }}
+                </div>
+
+                <div class="form-group">
+                    <label>Próximo contacto</label>
+                    {{ form.proximo_contacto }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Observaciones</label>
+                    {{ form.observaciones }}
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    {{ form.completado }}
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <a href="{% url 'seguimiento_list' %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+
+                    {% if seguimiento %}
+                        Actualizar seguimiento
+                    {% else %}
+                        Guardar seguimiento
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="help-box">
+
+            <h4>Información importante</h4>
+
+            <p>
+                Cada seguimiento permite registrar llamadas, correos,
+                reuniones o mensajes enviados a clientes para mantener
+                el control comercial y automatizar recordatorios.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

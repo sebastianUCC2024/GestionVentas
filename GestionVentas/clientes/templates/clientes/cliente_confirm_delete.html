@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+    .delete-container{
+        max-width:700px;
+        margin:60px auto;
+    }
+
+    .delete-card{
+        background:white;
+        border-radius:30px;
+        padding:40px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.10);
+        text-align:center;
+        position:relative;
+        overflow:hidden;
+    }
+
+    .delete-card::before{
+        content:"";
+        position:absolute;
+        width:180px;
+        height:180px;
+        border-radius:50%;
+        background:rgba(220,38,38,.08);
+        top:-60px;
+        right:-60px;
+    }
+
+    .icon{
+        width:100px;
+        height:100px;
+        margin:0 auto 28px;
+        border-radius:50%;
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+        font-size:46px;
+        font-weight:900;
+        box-shadow:0 20px 35px rgba(220,38,38,.25);
+    }
+
+    .delete-card h1{
+        font-size:38px;
+        color:#0f172a;
+        letter-spacing:-1px;
+        margin-bottom:14px;
+    }
+
+    .delete-card p{
+        color:#64748b;
+        font-size:16px;
+        line-height:1.7;
+        max-width:500px;
+        margin:0 auto;
+    }
+
+    .client-name{
+        margin-top:20px;
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        padding:18px;
+        border-radius:18px;
+        font-size:20px;
+        font-weight:900;
+        color:#0f172a;
+    }
+
+    .warning{
+        margin-top:22px;
+        background:#fee2e2;
+        color:#991b1b;
+        padding:16px;
+        border-radius:18px;
+        font-weight:800;
+    }
+
+    .actions{
+        display:flex;
+        justify-content:center;
+        gap:16px;
+        margin-top:34px;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+        padding:16px 24px;
+        border-radius:18px;
+        text-decoration:none;
+        font-weight:900;
+        border:none;
+        cursor:pointer;
+        transition:.25s;
+        font-size:14px;
+    }
+
+    .btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-danger{
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+        color:white;
+        box-shadow:0 15px 25px rgba(220,38,38,.25);
+    }
+
+    .btn-secondary{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+    @media(max-width:700px){
+
+        .delete-card{
+            padding:28px;
+        }
+
+        .delete-card h1{
+            font-size:32px;
+        }
+
+    }
+
+</style>
+
+<div class="delete-container">
+
+    <div class="delete-card">
+
+        <div class="icon">
+            !
+        </div>
+
+        <h1>Eliminar cliente</h1>
+
+        <p>
+            Estás a punto de eliminar permanentemente este cliente del sistema.
+            Esta acción no se puede deshacer.
+        </p>
+
+        <div class="client-name">
+            {{ cliente.nombre }}
+        </div>
+
+        <div class="warning">
+            Todos los datos relacionados podrían verse afectados.
+        </div>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="actions">
+
+                <a href="{% url 'cliente_detail' cliente.id %}"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Sí, eliminar cliente
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

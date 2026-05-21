@@ -1,0 +1,648 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+    .reports-container{
+        width:100%;
+    }
+
+    .hero{
+        position:relative;
+        overflow:hidden;
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+        border-radius:34px;
+        padding:42px;
+        margin-bottom:30px;
+        color:white;
+        box-shadow:0 25px 60px rgba(37,99,235,.28);
+    }
+
+    .hero::before{
+        content:"";
+        position:absolute;
+        width:320px;
+        height:320px;
+        border-radius:50%;
+        background:rgba(255,255,255,.08);
+        top:-120px;
+        right:-120px;
+    }
+
+    .hero-content{
+        position:relative;
+        z-index:2;
+    }
+
+    .hero h1{
+        font-size:46px;
+        font-weight:900;
+        letter-spacing:-1px;
+        margin-bottom:12px;
+    }
+
+    .hero p{
+        color:rgba(255,255,255,.88);
+        line-height:1.8;
+        max-width:760px;
+    }
+
+    .hero-actions{
+        margin-top:28px;
+        display:flex;
+        gap:14px;
+        flex-wrap:wrap;
+    }
+
+    .hero-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:16px 24px;
+        border-radius:18px;
+        text-decoration:none;
+        font-weight:900;
+        transition:.25s;
+    }
+
+    .hero-btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .hero-btn.primary{
+        background:white;
+        color:#2563eb;
+    }
+
+    .hero-btn.secondary{
+        background:rgba(255,255,255,.10);
+        border:1px solid rgba(255,255,255,.18);
+        color:white;
+    }
+
+    .kpi-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+        gap:22px;
+        margin-bottom:30px;
+    }
+
+    .kpi-card{
+        background:white;
+        border-radius:30px;
+        padding:28px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+        position:relative;
+        overflow:hidden;
+        transition:.25s;
+    }
+
+    .kpi-card:hover{
+        transform:translateY(-4px);
+    }
+
+    .kpi-card::after{
+        content:"";
+        position:absolute;
+        width:120px;
+        height:120px;
+        border-radius:50%;
+        background:rgba(37,99,235,.08);
+        top:-40px;
+        right:-40px;
+    }
+
+    .kpi-icon{
+        width:62px;
+        height:62px;
+        border-radius:18px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+        font-size:28px;
+        margin-bottom:18px;
+        box-shadow:0 18px 30px rgba(0,0,0,.12);
+    }
+
+    .blue{
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    }
+
+    .green{
+        background:linear-gradient(135deg,#22c55e,#15803d);
+    }
+
+    .orange{
+        background:linear-gradient(135deg,#f59e0b,#d97706);
+    }
+
+    .red{
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+    }
+
+    .purple{
+        background:linear-gradient(135deg,#7c3aed,#5b21b6);
+    }
+
+    .kpi-label{
+        color:#64748b;
+        font-size:14px;
+        font-weight:800;
+        margin-bottom:10px;
+    }
+
+    .kpi-value{
+        font-size:40px;
+        font-weight:900;
+        color:#0f172a;
+        letter-spacing:-1px;
+    }
+
+    .kpi-footer{
+        margin-top:12px;
+        color:#64748b;
+        font-size:13px;
+        font-weight:700;
+    }
+
+    .charts-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:24px;
+        margin-bottom:30px;
+    }
+
+    .chart-card{
+        background:white;
+        border-radius:30px;
+        padding:30px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+    }
+
+    .chart-card h3{
+        font-size:24px;
+        color:#0f172a;
+        margin-bottom:10px;
+    }
+
+    .chart-card p{
+        color:#64748b;
+        margin-bottom:26px;
+        line-height:1.6;
+    }
+
+    .chart-item{
+        margin-bottom:20px;
+    }
+
+    .chart-top{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:10px;
+        gap:10px;
+    }
+
+    .chart-label{
+        font-weight:800;
+        color:#0f172a;
+    }
+
+    .chart-value{
+        color:#64748b;
+        font-size:13px;
+        font-weight:800;
+    }
+
+    .chart-bar{
+        width:100%;
+        height:16px;
+        background:#e2e8f0;
+        border-radius:999px;
+        overflow:hidden;
+    }
+
+    .chart-fill{
+        height:100%;
+        width:0;
+        border-radius:999px;
+        transition:1.2s ease;
+        background:linear-gradient(90deg,#2563eb,#22c55e);
+    }
+
+    .table-card{
+        background:white;
+        border-radius:30px;
+        padding:30px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.08);
+    }
+
+    .table-card h3{
+        font-size:24px;
+        color:#0f172a;
+        margin-bottom:10px;
+    }
+
+    .table-card p{
+        color:#64748b;
+        margin-bottom:24px;
+    }
+
+    .table-wrap{
+        overflow-x:auto;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        min-width:900px;
+    }
+
+    th,
+    td{
+        padding:18px;
+        text-align:left;
+        border-bottom:1px solid #eef2f7;
+    }
+
+    th{
+        font-size:12px;
+        color:#64748b;
+        text-transform:uppercase;
+        letter-spacing:.5px;
+    }
+
+    td{
+        color:#0f172a;
+        font-weight:700;
+    }
+
+    .status{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:8px 14px;
+        border-radius:999px;
+        font-size:12px;
+        font-weight:900;
+    }
+
+    .success{
+        background:#dcfce7;
+        color:#166534;
+    }
+
+    .warning{
+        background:#fef3c7;
+        color:#92400e;
+    }
+
+    .danger{
+        background:#fee2e2;
+        color:#991b1b;
+    }
+
+    @media(max-width:1000px){
+
+        .charts-grid{
+            grid-template-columns:1fr;
+        }
+
+    }
+
+</style>
+
+<div class="reports-container">
+
+    <div class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Dashboard de reportes
+            </h1>
+
+            <p>
+                Visualiza métricas, KPIs, ventas, clientes y rendimiento
+                comercial del sistema CRM GestionVentas.
+            </p>
+
+            <div class="hero-actions">
+
+                <a href="{% url 'exportar_ventas_pdf' %}"
+                   class="hero-btn primary">
+                    Exportar ventas PDF
+                </a>
+
+                <a href="{% url 'exportar_clientes_pdf' %}"
+                   class="hero-btn secondary">
+                    Exportar clientes PDF
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="kpi-grid">
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon blue">
+                👥
+            </div>
+
+            <div class="kpi-label">
+                Clientes
+            </div>
+
+            <div class="kpi-value">
+                {{ total_clientes }}
+            </div>
+
+            <div class="kpi-footer">
+                Clientes registrados
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon green">
+                💰
+            </div>
+
+            <div class="kpi-label">
+                Ingresos
+            </div>
+
+            <div class="kpi-value">
+                ${{ total_ingresos }}
+            </div>
+
+            <div class="kpi-footer">
+                Total ventas generadas
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon orange">
+                📈
+            </div>
+
+            <div class="kpi-label">
+                Ventas
+            </div>
+
+            <div class="kpi-value">
+                {{ total_ventas }}
+            </div>
+
+            <div class="kpi-footer">
+                Oportunidades comerciales
+            </div>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon red">
+                📞
+            </div>
+
+            <div class="kpi-label">
+                Seguimientos
+            </div>
+
+            <div class="kpi-value">
+                {{ total_seguimientos }}
+            </div>
+
+            <div class="kpi-footer">
+                Contactos registrados
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="charts-grid">
+
+        <div class="chart-card">
+
+            <h3>
+                Ventas por estado
+            </h3>
+
+            <p>
+                Distribución de oportunidades comerciales.
+            </p>
+
+            {% for item in ventas_por_estado %}
+
+            <div class="chart-item">
+
+                <div class="chart-top">
+
+                    <div class="chart-label">
+                        {{ item.estado }}
+                    </div>
+
+                    <div class="chart-value">
+                        {{ item.total }}
+                    </div>
+
+                </div>
+
+                <div class="chart-bar">
+
+                    <div class="chart-fill"
+                         data-value="{{ item.total }}">
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="chart-card">
+
+            <h3>
+                Clientes activos/inactivos
+            </h3>
+
+            <p>
+                Estado actual de los clientes del CRM.
+            </p>
+
+            {% for item in clientes_por_estado %}
+
+            <div class="chart-item">
+
+                <div class="chart-top">
+
+                    <div class="chart-label">
+                        {{ item.estado }}
+                    </div>
+
+                    <div class="chart-value">
+                        {{ item.total }}
+                    </div>
+
+                </div>
+
+                <div class="chart-bar">
+
+                    <div class="chart-fill"
+                         data-value="{{ item.total }}">
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <div class="table-card">
+
+        <h3>
+            Últimas ventas registradas
+        </h3>
+
+        <p>
+            Resumen de las oportunidades comerciales más recientes.
+        </p>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Venta</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for venta in ventas_recientes %}
+
+                    <tr>
+
+                        <td>
+                            #{{ venta.id }}
+                        </td>
+
+                        <td>
+                            {{ venta.cliente.nombre }}
+                        </td>
+
+                        <td>
+                            {{ venta.titulo }}
+                        </td>
+
+                        <td>
+                            ${{ venta.monto }}
+                        </td>
+
+                        <td>
+
+                            {% if venta.estado == 'ganada' %}
+
+                            <span class="status success">
+                                Ganada
+                            </span>
+
+                            {% elif venta.estado == 'en_proceso' %}
+
+                            <span class="status warning">
+                                En proceso
+                            </span>
+
+                            {% else %}
+
+                            <span class="status danger">
+                                Perdida
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ venta.fecha_creacion|date:"d/m/Y" }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="6">
+                            No existen ventas registradas.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const bars = document.querySelectorAll('.chart-fill');
+
+    let max = 1;
+
+    bars.forEach(bar => {
+
+        const value = parseInt(bar.dataset.value);
+
+        if(value > max){
+            max = value;
+        }
+
+    });
+
+    bars.forEach(bar => {
+
+        const value = parseInt(bar.dataset.value);
+
+        const percent = Math.max((value / max) * 100, 8);
+
+        setTimeout(() => {
+            bar.style.width = percent + '%';
+        }, 300);
+
+    });
+
+</script>
+
+{% endblock %}

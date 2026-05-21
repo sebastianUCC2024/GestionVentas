@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página no encontrada | GestionVentas</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:
+                radial-gradient(circle at top left,#2563eb 0%,transparent 35%),
+                radial-gradient(circle at bottom right,#22c55e 0%,transparent 35%),
+                #0f172a;
+            overflow:hidden;
+            position:relative;
+        }
+
+        .bg{
+            position:absolute;
+            border-radius:50%;
+            filter:blur(70px);
+            opacity:.25;
+        }
+
+        .bg1{
+            width:300px;
+            height:300px;
+            background:#2563eb;
+            top:-80px;
+            left:-80px;
+        }
+
+        .bg2{
+            width:280px;
+            height:280px;
+            background:#22c55e;
+            bottom:-90px;
+            right:-90px;
+        }
+
+        .card{
+            width:100%;
+            max-width:560px;
+            background:rgba(255,255,255,.08);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,.15);
+            border-radius:36px;
+            padding:48px;
+            text-align:center;
+            position:relative;
+            z-index:10;
+            box-shadow:0 25px 60px rgba(0,0,0,.30);
+        }
+
+        .number{
+            font-size:110px;
+            font-weight:900;
+            color:white;
+            line-height:1;
+            margin-bottom:12px;
+        }
+
+        h1{
+            color:white;
+            font-size:38px;
+            margin-bottom:14px;
+        }
+
+        p{
+            color:#cbd5e1;
+            line-height:1.8;
+            font-size:16px;
+        }
+
+        .btn{
+            display:inline-block;
+            margin-top:28px;
+            background:linear-gradient(135deg,#2563eb,#1d4ed8);
+            color:white;
+            text-decoration:none;
+            padding:17px 28px;
+            border-radius:18px;
+            font-weight:900;
+            transition:.25s;
+        }
+
+        .btn:hover{
+            transform:translateY(-2px);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="bg bg1"></div>
+<div class="bg bg2"></div>
+
+<div class="card">
+
+    <div class="number">404</div>
+
+    <h1>Página no encontrada</h1>
+
+    <p>
+        La página que intentas abrir no existe o fue movida.
+    </p>
+
+    <a href="{% url 'ventas_dashboard' %}" class="btn">
+        Volver al sistema
+    </a>
+
+</div>
+
+</body>
+</html>

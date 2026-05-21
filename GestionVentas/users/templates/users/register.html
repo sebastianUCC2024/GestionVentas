@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | GestionVentas</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:
+                radial-gradient(circle at top left,#2563eb 0%,transparent 35%),
+                radial-gradient(circle at bottom right,#22c55e 0%,transparent 35%),
+                #0f172a;
+            padding:30px 0;
+        }
+
+        .register-card{
+            width:100%;
+            max-width:620px;
+            background:rgba(255,255,255,.08);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,.15);
+            border-radius:36px;
+            padding:42px;
+            box-shadow:0 25px 60px rgba(0,0,0,.30);
+        }
+
+        .logo{
+            text-align:center;
+            margin-bottom:34px;
+        }
+
+        .logo h1{
+            color:white;
+            font-size:42px;
+            font-weight:900;
+        }
+
+        .logo p{
+            color:#cbd5e1;
+            margin-top:10px;
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
+        }
+
+        .form-group{
+            display:flex;
+            flex-direction:column;
+        }
+
+        .full{
+            grid-column:1 / -1;
+        }
+
+        label{
+            margin-bottom:10px;
+            color:white;
+            font-weight:800;
+        }
+
+        input,
+        select{
+            width:100%;
+            padding:16px;
+            border:none;
+            border-radius:18px;
+            background:rgba(255,255,255,.10);
+            color:white;
+            outline:none;
+        }
+
+        .register-btn{
+            width:100%;
+            border:none;
+            padding:18px;
+            border-radius:18px;
+            background:linear-gradient(135deg,#2563eb,#1d4ed8);
+            color:white;
+            font-weight:900;
+            cursor:pointer;
+            margin-top:24px;
+        }
+
+        .links{
+            margin-top:22px;
+            text-align:center;
+        }
+
+        .links a{
+            color:#93c5fd;
+            text-decoration:none;
+            font-weight:800;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="register-card">
+
+    <div class="logo">
+
+        <h1>GestionVentas</h1>
+
+        <p>
+            Registro de usuarios
+        </p>
+
+    </div>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Usuario</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <label>Correo</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label>Nombre</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label>Apellido</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                {{ form.password1 }}
+            </div>
+
+            <div class="form-group">
+                <label>Confirmar contraseña</label>
+                {{ form.password2 }}
+            </div>
+
+        </div>
+
+        <button type="submit" class="register-btn">
+            Crear cuenta
+        </button>
+
+    </form>
+
+    <div class="links">
+
+        <a href="{% url 'login' %}">
+            Ya tengo cuenta
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<style>
+
+    .stats-grid-component{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+        gap:22px;
+        margin-bottom:30px;
+    }
+
+    .stats-card{
+        position:relative;
+        overflow:hidden;
+        background:white;
+        border-radius:28px;
+        padding:28px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 20px 45px rgba(15,23,42,.08);
+        transition:.25s;
+    }
+
+    .stats-card:hover{
+        transform:translateY(-4px);
+    }
+
+    .stats-card::after{
+        content:"";
+        position:absolute;
+        width:120px;
+        height:120px;
+        border-radius:50%;
+        background:rgba(37,99,235,.08);
+        top:-40px;
+        right:-40px;
+    }
+
+    .stats-card .label{
+        color:#64748b;
+        font-size:14px;
+        font-weight:800;
+        margin-bottom:12px;
+        display:block;
+    }
+
+    .stats-card .value{
+        font-size:38px;
+        font-weight:900;
+        color:#0f172a;
+        letter-spacing:-1px;
+    }
+
+    .stats-card .extra{
+        margin-top:12px;
+        font-size:13px;
+        font-weight:700;
+        color:#22c55e;
+    }
+
+    .stats-card.red .extra{
+        color:#dc2626;
+    }
+
+    .stats-card.orange .extra{
+        color:#f59e0b;
+    }
+
+</style>
+
+<div class="stats-grid-component">
+
+    <div class="stats-card">
+
+        <span class="label">
+            Total clientes
+        </span>
+
+        <div class="value">
+            {{ total_clientes }}
+        </div>
+
+        <div class="extra">
+            Clientes registrados
+        </div>
+
+    </div>
+
+    <div class="stats-card">
+
+        <span class="label">
+            Total ventas
+        </span>
+
+        <div class="value">
+            {{ total_ventas }}
+        </div>
+
+        <div class="extra">
+            Oportunidades activas
+        </div>
+
+    </div>
+
+    <div class="stats-card orange">
+
+        <span class="label">
+            Pendientes
+        </span>
+
+        <div class="value">
+            {{ pendientes }}
+        </div>
+
+        <div class="extra">
+            Seguimientos por realizar
+        </div>
+
+    </div>
+
+    <div class="stats-card red">
+
+        <span class="label">
+            Ingresos
+        </span>
+
+        <div class="value">
+            ${{ total_ingresos }}
+        </div>
+
+        <div class="extra">
+            Ventas generadas
+        </div>
+
+    </div>
+
+</div>
