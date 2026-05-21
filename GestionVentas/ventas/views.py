@@ -19,10 +19,7 @@ def venta_list(request):
     query = request.GET.get('q')
     estado = request.GET.get('estado')
 
-    ventas = OportunidadVenta.objects.select_related(
-        'cliente',
-        'vendedor'
-    ).all()
+    ventas = OportunidadVenta.objects.select_related('cliente', 'vendedor').all()
 
     if query:
         ventas = ventas.filter(
@@ -35,19 +32,14 @@ def venta_list(request):
     if estado:
         ventas = ventas.filter(estado=estado)
 
-    total_ventas = ventas.count()
-    total_monto = ventas.aggregate(total=Sum('monto'))['total'] or 0
-    ventas_ganadas = ventas.filter(estado='ganada').count()
-    ventas_perdidas = ventas.filter(estado='perdida').count()
-
     return render(request, 'ventas/venta_list.html', {
         'ventas': ventas,
         'query': query,
         'estado': estado,
-        'total_ventas': total_ventas,
-        'total_monto': total_monto,
-        'ventas_ganadas': ventas_ganadas,
-        'ventas_perdidas': ventas_perdidas,
+        'total_ventas': ventas.count(),
+        'total_monto': ventas.aggregate(total=Sum('monto'))['total'] or 0,
+        'ventas_ganadas': ventas.filter(estado='ganada').count(),
+        'ventas_perdidas': ventas.filter(estado='perdida').count(),
     })
 
 
@@ -65,7 +57,7 @@ def venta_detail(request, pk):
 
     return render(request, 'ventas/venta_detail.html', {
         'venta': venta,
-        'seguimientos': seguimientos,
+        'seguimientos': seguimientos
     })
 
 
@@ -87,9 +79,7 @@ def venta_create(request):
     else:
         form = OportunidadVentaForm(initial={'vendedor': request.user})
 
-    return render(request, 'ventas/venta_form.html', {
-        'form': form
-    })
+    return render(request, 'ventas/venta_form.html', {'form': form})
 
 
 @login_required
@@ -109,7 +99,7 @@ def venta_update(request, pk):
 
     return render(request, 'ventas/venta_form.html', {
         'form': form,
-        'venta': venta,
+        'venta': venta
     })
 
 
@@ -123,9 +113,7 @@ def venta_delete(request, pk):
         messages.success(request, 'Oportunidad de venta eliminada correctamente.')
         return redirect('venta_list')
 
-    return render(request, 'ventas/venta_confirm_delete.html', {
-        'venta': venta
-    })
+    return render(request, 'ventas/venta_confirm_delete.html', {'venta': venta})
 
 
 @login_required
@@ -151,28 +139,20 @@ def seguimiento_list(request):
     if tipo:
         seguimientos = seguimientos.filter(tipo_contacto=tipo)
 
-    total_seguimientos = seguimientos.count()
-    pendientes = seguimientos.filter(completado=False).count()
-    completados = seguimientos.filter(completado=True).count()
-
     return render(request, 'ventas/seguimiento_list.html', {
         'seguimientos': seguimientos,
         'query': query,
         'tipo': tipo,
-        'total_seguimientos': total_seguimientos,
-        'pendientes': pendientes,
-        'completados': completados,
+        'total_seguimientos': seguimientos.count(),
+        'pendientes': seguimientos.filter(completado=False).count(),
+        'completados': seguimientos.filter(completado=True).count(),
     })
 
 
 @login_required
 def seguimiento_detail(request, pk):
     seguimiento = get_object_or_404(
-        Seguimiento.objects.select_related(
-            'cliente',
-            'oportunidad',
-            'usuario'
-        ),
+        Seguimiento.objects.select_related('cliente', 'oportunidad', 'usuario'),
         pk=pk
     )
 
@@ -200,9 +180,9 @@ def seguimiento_create(request):
                     subject='Nuevo seguimiento registrado',
                     message=(
                         f'Hola {seguimiento.cliente.nombre},\n\n'
-                        f'Se ha registrado un nuevo seguimiento en el sistema GestionVentas.\n'
-                        f'Tipo de contacto: {seguimiento.get_tipo_contacto_display()}\n'
+                        f'Se ha registrado un nuevo seguimiento en GestionVentas.\n'
                         f'Oportunidad: {seguimiento.oportunidad.titulo}\n'
+                        f'Tipo de contacto: {seguimiento.get_tipo_contacto_display()}\n'
                         f'Próximo contacto: {seguimiento.proximo_contacto or "No definido"}\n\n'
                         f'Observaciones:\n{seguimiento.observaciones}'
                     ),
@@ -216,9 +196,7 @@ def seguimiento_create(request):
     else:
         form = SeguimientoForm(initial={'usuario': request.user})
 
-    return render(request, 'ventas/seguimiento_form.html', {
-        'form': form
-    })
+    return render(request, 'ventas/seguimiento_form.html', {'form': form})
 
 
 @login_required
@@ -238,7 +216,7 @@ def seguimiento_update(request, pk):
 
     return render(request, 'ventas/seguimiento_form.html', {
         'form': form,
-        'seguimiento': seguimiento,
+        'seguimiento': seguimiento
     })
 
 
@@ -265,27 +243,12 @@ def ventas_dashboard(request):
     total_clientes = Cliente.objects.count()
     total_ventas = OportunidadVenta.objects.count()
 
+    clientes_activos = Cliente.objects.filter(estado='activo').count()
+    clientes_inactivos = Cliente.objects.filter(estado='inactivo').count()
+
     total_ingresos = OportunidadVenta.objects.filter(
         estado='ganada'
     ).aggregate(total=Sum('monto'))['total'] or 0
-
-    ventas_ganadas = OportunidadVenta.objects.filter(
-        estado='ganada'
-    ).count()
-
-    ventas_perdidas = OportunidadVenta.objects.filter(
-        estado='perdida'
-    ).count()
-
-    seguimientos = Seguimiento.objects.count()
-
-    clientes_activos = Cliente.objects.filter(
-        estado='activo'
-    ).count()
-
-    clientes_inactivos = Cliente.objects.filter(
-        estado='inactivo'
-    ).count()
 
     ventas_por_estado = (
         OportunidadVenta.objects
@@ -294,78 +257,60 @@ def ventas_dashboard(request):
         .order_by('estado')
     )
 
-    ventas_recientes = (
+    ventas_por_mes = (
         OportunidadVenta.objects
-        .select_related('cliente', 'vendedor')
-        .order_by('-fecha_creacion')[:5]
+        .annotate(mes=TruncMonth('fecha_creacion'))
+        .values('mes')
+        .annotate(total=Count('id'), ingresos=Sum('monto'))
+        .order_by('mes')
+    )
+
+    ventas_por_vendedor = (
+        OportunidadVenta.objects
+        .values('vendedor__username')
+        .annotate(total=Count('id'), ingresos=Sum('monto'))
+        .order_by('-total')[:5]
     )
 
     recordatorios_proximos = (
         Seguimiento.objects
-        .filter(
-            completado=False,
-            proximo_contacto__range=[hoy, limite]
-        )
+        .filter(completado=False, proximo_contacto__range=[hoy, limite])
         .select_related('cliente', 'oportunidad', 'usuario')
         .order_by('proximo_contacto')[:6]
     )
 
     recordatorios_vencidos = (
         Seguimiento.objects
-        .filter(
-            completado=False,
-            proximo_contacto__lt=hoy
-        )
+        .filter(completado=False, proximo_contacto__lt=hoy)
         .select_related('cliente', 'oportunidad', 'usuario')
         .order_by('proximo_contacto')[:6]
     )
 
-    ventas_por_vendedor = (
+    ventas_recientes = (
         OportunidadVenta.objects
-        .values('vendedor__username')
-        .annotate(
-            total=Count('id'),
-            ingresos=Sum('monto')
-        )
-        .order_by('-total')[:5]
-    )
-
-    ventas_por_mes = (
-        OportunidadVenta.objects
-        .annotate(mes=TruncMonth('fecha_creacion'))
-        .values('mes')
-        .annotate(
-            total=Count('id'),
-            ingresos=Sum('monto')
-        )
-        .order_by('mes')
+        .select_related('cliente', 'vendedor')
+        .order_by('-fecha_creacion')[:5]
     )
 
     clientes_por_estado = [
-        {
-            'estado': 'Activos',
-            'total': clientes_activos
-        },
-        {
-            'estado': 'Inactivos',
-            'total': clientes_inactivos
-        }
+        {'estado': 'Activos', 'total': clientes_activos},
+        {'estado': 'Inactivos', 'total': clientes_inactivos},
     ]
 
     return render(request, 'ventas/ventas_dashboard.html', {
         'total_clientes': total_clientes,
         'total_ventas': total_ventas,
-        'total_ingresos': total_ingresos,
-        'ventas_ganadas': ventas_ganadas,
-        'ventas_perdidas': ventas_perdidas,
-        'seguimientos': seguimientos,
         'clientes_activos': clientes_activos,
         'clientes_inactivos': clientes_inactivos,
+        'total_ingresos': total_ingresos,
+        'ventas_ganadas': OportunidadVenta.objects.filter(estado='ganada').count(),
+        'ventas_perdidas': OportunidadVenta.objects.filter(estado='perdida').count(),
+        'seguimientos': Seguimiento.objects.count(),
         'ventas_por_estado': ventas_por_estado,
-        'ventas_recientes': ventas_recientes,
+        'ventas_por_mes': ventas_por_mes,
+        'ventas_por_vendedor': ventas_por_vendedor,
         'recordatorios_proximos': recordatorios_proximos,
         'recordatorios_vencidos': recordatorios_vencidos,
-        'ventas_por_vendedor': ventas_por_vendedor,
-        'ventas_por_mes': ventas_por_mes,
+        'ventas_recientes': ventas_recientes,
         'clientes_por_estado': clientes_por_estado,
     })

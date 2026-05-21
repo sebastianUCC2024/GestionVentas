@@ -2,219 +2,177 @@
 
 {% block content %}
 <style>
-    :root {
-        --red: #dc2626;
-        --dark: #0f172a;
-        --gray: #64748b;
-        --border: #e2e8f0;
-        --shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+
+    .delete-container{
+        max-width:700px;
+        margin:60px auto;
     }
 
-    .delete-page {
-        min-height: 100vh;
-        padding: 35px;
-        background: linear-gradient(135deg, #fff1f2, #f8fafc);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Arial, sans-serif;
+    .delete-card{
+        background:white;
+        border-radius:30px;
+        padding:40px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 25px 55px rgba(15,23,42,.10);
+        text-align:center;
+        position:relative;
+        overflow:hidden;
     }
 
-    .delete-card {
-        width: 100%;
-        max-width: 650px;
-        background: white;
-        border-radius: 28px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
-        animation: showCard 0.4s ease;
+    .delete-card::before{
+        content:"";
+        position:absolute;
+        width:180px;
+        height:180px;
+        border-radius:50%;
+        background:rgba(220,38,38,.08);
+        top:-60px;
+        right:-60px;
     }
 
-    @keyframes showCard {
-        from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
+    .icon{
+        width:100px;
+        height:100px;
+        margin:0 auto 28px;
+        border-radius:50%;
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+        font-size:46px;
+        font-weight:900;
+        box-shadow:0 20px 35px rgba(220,38,38,.25);
+    }
+
+    .delete-card h1{
+        font-size:38px;
+        color:#0f172a;
+        letter-spacing:-1px;
+        margin-bottom:14px;
+    }
+
+    .delete-card p{
+        color:#64748b;
+        font-size:16px;
+        line-height:1.7;
+        max-width:500px;
+        margin:0 auto;
+    }
+
+    .client-name{
+        margin-top:20px;
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        padding:18px;
+        border-radius:18px;
+        font-size:20px;
+        font-weight:900;
+        color:#0f172a;
+    }
+
+    .warning{
+        margin-top:22px;
+        background:#fee2e2;
+        color:#991b1b;
+        padding:16px;
+        border-radius:18px;
+        font-weight:800;
+    }
+
+    .actions{
+        display:flex;
+        justify-content:center;
+        gap:16px;
+        margin-top:34px;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+        padding:16px 24px;
+        border-radius:18px;
+        text-decoration:none;
+        font-weight:900;
+        border:none;
+        cursor:pointer;
+        transition:.25s;
+        font-size:14px;
+    }
+
+    .btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-danger{
+        background:linear-gradient(135deg,#dc2626,#991b1b);
+        color:white;
+        box-shadow:0 15px 25px rgba(220,38,38,.25);
+    }
+
+    .btn-secondary{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+    @media(max-width:700px){
+
+        .delete-card{
+            padding:28px;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
+
+        .delete-card h1{
+            font-size:32px;
         }
+
     }
 
-    .delete-header {
-        background: linear-gradient(135deg, #7f1d1d, #dc2626);
-        color: white;
-        padding: 35px;
-        text-align: center;
-    }
-
-    .delete-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.18);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 42px;
-        margin: auto;
-        margin-bottom: 18px;
-    }
-
-    .delete-header h1 {
-        margin: 0;
-        font-size: 30px;
-    }
-
-    .delete-header p {
-        margin-top: 8px;
-        color: #fee2e2;
-    }
-
-    .delete-body {
-        padding: 35px;
-    }
-
-    .warning-box {
-        background: #fff7ed;
-        border: 1px solid #fed7aa;
-        border-radius: 18px;
-        padding: 22px;
-        margin-bottom: 25px;
-    }
-
-    .warning-box h3 {
-        margin-top: 0;
-        color: var(--dark);
-    }
-
-    .warning-box p {
-        color: var(--gray);
-        margin: 8px 0;
-    }
-
-    .client-summary {
-        background: #f8fafc;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 20px;
-        margin-bottom: 28px;
-    }
-
-    .client-summary strong {
-        color: var(--dark);
-        font-size: 20px;
-    }
-
-    .client-summary span {
-        display: block;
-        color: var(--gray);
-        margin-top: 6px;
-    }
-
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-    }
-
-    .btn {
-        padding: 15px 24px;
-        border-radius: 14px;
-        border: none;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 15px;
-        transition: 0.3s;
-        text-align: center;
-    }
-
-    .btn-cancel {
-        background: #e2e8f0;
-        color: var(--dark);
-    }
-
-    .btn-delete {
-        background: var(--red);
-        color: white;
-    }
-
-    .btn-delete:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .confirm-check {
-        margin-bottom: 22px;
-        color: var(--dark);
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .confirm-check input {
-        width: 18px;
-        height: 18px;
-    }
-
-    @media (max-width: 600px) {
-        .actions {
-            flex-direction: column;
-        }
-    }
 </style>
 
-<div class="delete-page">
+<div class="delete-container">
+
     <div class="delete-card">
-        <div class="delete-header">
-            <div class="delete-icon">!</div>
-            <h1>Confirmar eliminación</h1>
-            <p>Esta acción no se puede deshacer.</p>
+
+        <div class="icon">
+            !
         </div>
 
-        <div class="delete-body">
-            <div class="warning-box">
-                <h3>Atención</h3>
-                <p>Estás a punto de eliminar un cliente del sistema.</p>
-                <p>Verifica que realmente deseas continuar.</p>
-            </div>
+        <h1>Eliminar cliente</h1>
 
-            <div class="client-summary">
-                <strong>{{ cliente.nombre }}</strong>
-                <span>Documento: {{ cliente.documento }}</span>
-                <span>Correo: {{ cliente.correo }}</span>
-            </div>
+        <p>
+            Estás a punto de eliminar permanentemente este cliente del sistema.
+            Esta acción no se puede deshacer.
+        </p>
 
-            <form method="post">
-                {% csrf_token %}
-
-                <label class="confirm-check">
-                    <input type="checkbox" id="confirmDelete">
-                    Confirmo que deseo eliminar este cliente.
-                </label>
-
-                <div class="actions">
-                    <a href="{% url 'cliente_list' %}" class="btn btn-cancel">Cancelar</a>
-                    <button type="submit" class="btn btn-delete" id="deleteButton" disabled>
-                        Eliminar definitivamente
-                    </button>
-                </div>
-            </form>
+        <div class="client-name">
+            {{ cliente.nombre }}
         </div>
+
+        <div class="warning">
+            Todos los datos relacionados podrían verse afectados.
+        </div>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="actions">
+
+                <a href="{% url 'cliente_detail' cliente.id %}"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Sí, eliminar cliente
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
+
 </div>
 
-<script>
-    const checkbox = document.getElementById("confirmDelete");
-    const deleteButton = document.getElementById("deleteButton");
-
-    checkbox.addEventListener("change", function () {
-        deleteButton.disabled = !this.checked;
-    });
-</script>
 {% endblock %}

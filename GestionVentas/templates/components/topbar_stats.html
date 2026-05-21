@@ -1,0 +1,62 @@
+<style>
+
+    .topbar-stats{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+        gap:18px;
+        margin-bottom:26px;
+    }
+
+    .top-stat{
+        background:white;
+        border-radius:22px;
+        padding:22px;
+        border:1px solid #e2e8f0;
+        box-shadow:0 15px 35px rgba(15,23,42,.06);
+        transition:.25s;
+    }
+
+    .top-stat:hover{
+        transform:translateY(-3px);
+    }
+
+    .top-stat span{
+        display:block;
+        color:#64748b;
+        font-size:13px;
+        font-weight:800;
+        margin-bottom:8px;
+    }
+
+    .top-stat strong{
+        font-size:30px;
+        color:#0f172a;
+        font-weight:900;
+        letter-spacing:-1px;
+    }
+
+</style>
+
+<div class="topbar-stats">
+
+    <div class="top-stat">
+        <span>Clientes</span>
+        <strong>{{ total_clientes }}</strong>
+    </div>
+
+    <div class="top-stat">
+        <span>Ventas</span>
+        <strong>{{ total_ventas }}</strong>
+    </div>
+
+    <div class="top-stat">
+        <span>Ingresos</span>
+        <strong>${{ total_ingresos }}</strong>
+    </div>
+
+    <div class="top-stat">
+        <span>Seguimientos</span>
+        <strong>{{ total_seguimientos }}</strong>
+    </div>
+
+</div>

@@ -9,9 +9,11 @@ from openpyxl.styles import Font, PatternFill, Alignment
 
 from clientes.models import Cliente
 from ventas.models import OportunidadVenta
+from users.decorators import admin_required
 
 
 @login_required
+@admin_required
 def reporte_clientes_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporte_clientes.pdf"'
@@ -30,10 +32,11 @@ def reporte_clientes_pdf(request):
     y = height - 110
 
     pdf.setFont("Helvetica-Bold", 9)
-    pdf.drawString(50, y, "Nombre")
-    pdf.drawString(180, y, "Documento")
-    pdf.drawString(280, y, "Correo")
-    pdf.drawString(430, y, "Estado")
+    pdf.drawString(50, y, "ID")
+    pdf.drawString(80, y, "Nombre")
+    pdf.drawString(210, y, "Documento")
+    pdf.drawString(310, y, "Correo")
+    pdf.drawString(470, y, "Estado")
 
     y -= 20
     pdf.setFont("Helvetica", 8)
@@ -46,10 +49,11 @@ def reporte_clientes_pdf(request):
             y = height - 50
             pdf.setFont("Helvetica", 8)
 
-        pdf.drawString(50, y, str(cliente.nombre)[:22])
-        pdf.drawString(180, y, str(cliente.documento)[:18])
-        pdf.drawString(280, y, str(cliente.correo)[:28])
-        pdf.drawString(430, y, str(cliente.estado).title())
+        pdf.drawString(50, y, str(cliente.id))
+        pdf.drawString(80, y, str(cliente.nombre)[:22])
+        pdf.drawString(210, y, str(cliente.documento)[:18])
+        pdf.drawString(310, y, str(cliente.correo)[:28])
+        pdf.drawString(470, y, str(cliente.estado).title())
 
         y -= 18
 
@@ -58,10 +62,12 @@ def reporte_clientes_pdf(request):
 
 
 @login_required
+@admin_required
 def reporte_ventas_excel(request):
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+
     response['Content-Disposition'] = 'attachment; filename="reporte_ventas.xlsx"'
 
     wb = Workbook()
@@ -69,6 +75,7 @@ def reporte_ventas_excel(request):
     ws.title = "Ventas"
 
     headers = [
+        "ID",
         "Título",
         "Cliente",
         "Vendedor",
@@ -92,6 +99,7 @@ def reporte_ventas_excel(request):
 
     for venta in ventas:
         ws.append([
+            venta.id,
             venta.titulo,
             venta.cliente.nombre,
             venta.vendedor.username if venta.vendedor else "Sin asignar",

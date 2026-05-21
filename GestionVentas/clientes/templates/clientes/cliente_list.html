@@ -2,61 +2,256 @@
 
 {% block content %}
 <style>
-    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-    .page-header h1{font-size:36px;color:#0f172a;margin-bottom:6px}
-    .page-header p{color:#64748b}
-    .btn-main{background:#2563eb;color:white;padding:14px 22px;border-radius:14px;text-decoration:none;font-weight:bold}
-    .filters,.table-card{background:white;border-radius:22px;padding:24px;box-shadow:0 20px 45px rgba(15,23,42,.08);margin-bottom:25px}
-    .filter-form{display:grid;grid-template-columns:2fr 1fr auto auto;gap:14px}
-    input,select{padding:14px;border:1px solid #e2e8f0;border-radius:14px;outline:none}
-    .btn-filter,.btn-clear{border:none;padding:14px 18px;border-radius:14px;font-weight:bold;text-decoration:none;cursor:pointer}
-    .btn-filter{background:#0f172a;color:white}
-    .btn-clear{background:#e2e8f0;color:#0f172a;text-align:center}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:16px;border-bottom:1px solid #e2e8f0;text-align:left}
-    th{font-size:13px;text-transform:uppercase;color:#64748b}
-    .badge{padding:7px 13px;border-radius:999px;font-size:12px;font-weight:bold}
-    .activo{background:#dcfce7;color:#166534}
-    .inactivo{background:#fee2e2;color:#991b1b}
-    .actions{display:flex;gap:8px}
-    .action{padding:8px 12px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:bold}
-    .view{background:#dbeafe;color:#1d4ed8}
-    .edit{background:#fef3c7;color:#92400e}
-    .delete{background:#fee2e2;color:#991b1b}
-    @media(max-width:900px){.filter-form{grid-template-columns:1fr}.table-wrap{overflow:auto}table{min-width:850px}.page-header{flex-direction:column;align-items:flex-start;gap:15px}}
+    .page-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:28px;
+        gap:20px;
+    }
+
+    .page-header h1{
+        font-size:38px;
+        color:#0f172a;
+        letter-spacing:-1px;
+    }
+
+    .page-header p{
+        color:#64748b;
+        margin-top:8px;
+    }
+
+    .btn-main{
+        background:linear-gradient(135deg,#2563eb,#1d4ed8);
+        color:white;
+        padding:15px 22px;
+        border-radius:16px;
+        text-decoration:none;
+        font-weight:800;
+        transition:.25s;
+        box-shadow:0 15px 25px rgba(37,99,235,.25);
+    }
+
+    .btn-main:hover{
+        transform:translateY(-2px);
+    }
+
+    .filters,
+    .table-card{
+        background:white;
+        border-radius:24px;
+        padding:26px;
+        box-shadow:0 20px 45px rgba(15,23,42,.08);
+        border:1px solid #e2e8f0;
+    }
+
+    .filters{
+        margin-bottom:24px;
+    }
+
+    .filter-form{
+        display:grid;
+        grid-template-columns:2fr 1fr auto auto;
+        gap:14px;
+    }
+
+    input,
+    select{
+        padding:15px;
+        border:1px solid #e2e8f0;
+        border-radius:16px;
+        outline:none;
+        font-size:15px;
+        transition:.25s;
+    }
+
+    input:focus,
+    select:focus{
+        border-color:#2563eb;
+        box-shadow:0 0 0 4px rgba(37,99,235,.1);
+    }
+
+    .btn-filter,
+    .btn-clear{
+        border:none;
+        padding:15px 18px;
+        border-radius:16px;
+        font-weight:800;
+        cursor:pointer;
+        text-decoration:none;
+        text-align:center;
+        transition:.25s;
+    }
+
+    .btn-filter{
+        background:#0f172a;
+        color:white;
+    }
+
+    .btn-clear{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+    .btn-filter:hover,
+    .btn-clear:hover{
+        transform:translateY(-2px);
+    }
+
+    .table-wrap{
+        overflow-x:auto;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        min-width:900px;
+    }
+
+    th,
+    td{
+        padding:16px;
+        border-bottom:1px solid #e2e8f0;
+        text-align:left;
+    }
+
+    th{
+        color:#64748b;
+        font-size:12px;
+        text-transform:uppercase;
+        letter-spacing:.5px;
+    }
+
+    td{
+        font-weight:600;
+        color:#0f172a;
+    }
+
+    .badge{
+        padding:7px 13px;
+        border-radius:999px;
+        font-size:12px;
+        font-weight:900;
+    }
+
+    .activo{
+        background:#dcfce7;
+        color:#166534;
+    }
+
+    .inactivo{
+        background:#fee2e2;
+        color:#991b1b;
+    }
+
+    .actions{
+        display:flex;
+        gap:8px;
+    }
+
+    .action{
+        padding:9px 13px;
+        border-radius:12px;
+        text-decoration:none;
+        font-size:13px;
+        font-weight:800;
+        transition:.25s;
+    }
+
+    .view{
+        background:#dbeafe;
+        color:#1d4ed8;
+    }
+
+    .edit{
+        background:#fef3c7;
+        color:#92400e;
+    }
+
+    .delete{
+        background:#fee2e2;
+        color:#991b1b;
+    }
+
+    .action:hover{
+        transform:translateY(-2px);
+    }
+
+    @media(max-width:950px){
+
+        .page-header{
+            flex-direction:column;
+            align-items:flex-start;
+        }
+
+        .filter-form{
+            grid-template-columns:1fr;
+        }
+
+    }
 </style>
 
 <div class="page-header">
+
     <div>
         <h1>Clientes</h1>
-        <p>Gestión de clientes registrados en el CRM</p>
+        <p>Gestión y seguimiento de clientes registrados.</p>
     </div>
 
     {% if user.rol == 'VENDEDOR' or user.rol == 'ADMIN' %}
-        <a href="{% url 'cliente_create' %}" class="btn-main">Nuevo cliente</a>
+    <a href="{% url 'cliente_create' %}" class="btn-main">
+        Nuevo cliente
+    </a>
     {% endif %}
+
 </div>
 
 <div class="filters">
+
     <form method="get" class="filter-form">
-        <input type="text" name="q" placeholder="Buscar por nombre, documento o correo" value="{{ query|default:'' }}">
+
+        <input
+            type="text"
+            name="q"
+            placeholder="Buscar por ID, nombre, documento o correo"
+            value="{{ query|default:'' }}"
+        >
 
         <select name="estado">
             <option value="">Todos los estados</option>
-            <option value="activo" {% if estado == 'activo' %}selected{% endif %}>Activo</option>
-            <option value="inactivo" {% if estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+
+            <option value="activo"
+                {% if estado == 'activo' %}selected{% endif %}>
+                Activo
+            </option>
+
+            <option value="inactivo"
+                {% if estado == 'inactivo' %}selected{% endif %}>
+                Inactivo
+            </option>
         </select>
 
-        <button type="submit" class="btn-filter">Filtrar</button>
-        <a href="{% url 'cliente_list' %}" class="btn-clear">Limpiar</a>
+        <button type="submit" class="btn-filter">
+            Filtrar
+        </button>
+
+        <a href="{% url 'cliente_list' %}" class="btn-clear">
+            Limpiar
+        </a>
+
     </form>
+
 </div>
 
 <div class="table-card">
+
     <div class="table-wrap">
+
         <table>
+
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Nombre</th>
                     <th>Documento</th>
                     <th>Correo</th>
@@ -68,39 +263,85 @@
             </thead>
 
             <tbody>
+
                 {% for cliente in clientes %}
+
                 <tr>
-                    <td><strong>{{ cliente.nombre }}</strong></td>
+
+                    <td>#{{ cliente.id }}</td>
+
+                    <td>
+                        <strong>{{ cliente.nombre }}</strong>
+                    </td>
+
                     <td>{{ cliente.documento }}</td>
+
                     <td>{{ cliente.correo }}</td>
+
                     <td>{{ cliente.telefono }}</td>
+
                     <td>
                         <span class="badge {{ cliente.estado }}">
                             {{ cliente.get_estado_display }}
                         </span>
                     </td>
-                    <td>{{ cliente.fecha_registro|date:"d/m/Y" }}</td>
+
                     <td>
+                        {{ cliente.fecha_registro|date:"d/m/Y" }}
+                    </td>
+
+                    <td>
+
                         <div class="actions">
-                            <a href="{% url 'cliente_detail' cliente.id %}" class="action view">Ver</a>
+
+                            <a
+                                href="{% url 'cliente_detail' cliente.id %}"
+                                class="action view">
+                                Ver
+                            </a>
 
                             {% if user.rol == 'VENDEDOR' or user.rol == 'ADMIN' %}
-                                <a href="{% url 'cliente_update' cliente.id %}" class="action edit">Editar</a>
+
+                            <a
+                                href="{% url 'cliente_update' cliente.id %}"
+                                class="action edit">
+                                Editar
+                            </a>
+
                             {% endif %}
 
                             {% if user.rol == 'ADMIN' %}
-                                <a href="{% url 'cliente_delete' cliente.id %}" class="action delete">Eliminar</a>
+
+                            <a
+                                href="{% url 'cliente_delete' cliente.id %}"
+                                class="action delete">
+                                Eliminar
+                            </a>
+
                             {% endif %}
+
                         </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="8">
+                        No hay clientes registrados.
                     </td>
                 </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7">No hay clientes registrados.</td>
-                </tr>
+
                 {% endfor %}
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>
+
 {% endblock %}

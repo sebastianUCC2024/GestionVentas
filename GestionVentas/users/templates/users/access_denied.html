@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sesión cerrada | GestionVentas</title>
+    <title>Acceso denegado | GestionVentas</title>
 
     <style>
 
@@ -20,8 +20,8 @@
             justify-content:center;
             align-items:center;
             background:
-                radial-gradient(circle at top left,#2563eb 0%,transparent 35%),
-                radial-gradient(circle at bottom right,#22c55e 0%,transparent 35%),
+                radial-gradient(circle at top left,#dc2626 0%,transparent 35%),
+                radial-gradient(circle at bottom right,#f59e0b 0%,transparent 35%),
                 #0f172a;
             overflow:hidden;
             position:relative;
@@ -37,7 +37,7 @@
         .shape1{
             width:320px;
             height:320px;
-            background:#2563eb;
+            background:#dc2626;
             top:-90px;
             left:-90px;
         }
@@ -45,14 +45,14 @@
         .shape2{
             width:300px;
             height:300px;
-            background:#22c55e;
+            background:#f59e0b;
             bottom:-90px;
             right:-90px;
         }
 
-        .logout-card{
+        .card{
             width:100%;
-            max-width:520px;
+            max-width:560px;
             background:rgba(255,255,255,.08);
             backdrop-filter:blur(18px);
             border:1px solid rgba(255,255,255,.15);
@@ -64,22 +64,22 @@
             box-shadow:0 25px 60px rgba(0,0,0,.30);
         }
 
-        .success-icon{
-            width:110px;
-            height:110px;
-            margin:0 auto 28px;
+        .icon{
+            width:120px;
+            height:120px;
+            margin:0 auto 30px;
             border-radius:50%;
-            background:linear-gradient(135deg,#22c55e,#15803d);
+            background:linear-gradient(135deg,#dc2626,#991b1b);
             display:flex;
             align-items:center;
             justify-content:center;
             color:white;
-            font-size:52px;
+            font-size:60px;
             font-weight:900;
-            box-shadow:0 20px 35px rgba(34,197,94,.25);
+            box-shadow:0 20px 35px rgba(220,38,38,.25);
         }
 
-        .logout-card h1{
+        h1{
             color:white;
             font-size:42px;
             font-weight:900;
@@ -87,13 +87,13 @@
             margin-bottom:14px;
         }
 
-        .logout-card p{
+        p{
             color:#cbd5e1;
             line-height:1.8;
             font-size:16px;
         }
 
-        .btn-login{
+        .btn{
             display:inline-block;
             margin-top:30px;
             background:linear-gradient(135deg,#2563eb,#1d4ed8);
@@ -106,7 +106,7 @@
             box-shadow:0 18px 30px rgba(37,99,235,.30);
         }
 
-        .btn-login:hover{
+        .btn:hover{
             transform:translateY(-2px);
         }
 
@@ -119,12 +119,12 @@
 
         @media(max-width:600px){
 
-            .logout-card{
+            .card{
                 margin:20px;
                 padding:34px;
             }
 
-            .logout-card h1{
+            h1{
                 font-size:34px;
             }
 
@@ -139,25 +139,25 @@
 <div class="bg-shape shape1"></div>
 <div class="bg-shape shape2"></div>
 
-<div class="logout-card">
+<div class="card">
 
-    <div class="success-icon">
-        ✓
+    <div class="icon">
+        !
     </div>
 
-    <h1>Sesión cerrada</h1>
+    <h1>Acceso denegado</h1>
 
     <p>
-        Has cerrado sesión correctamente en el sistema CRM GestionVentas.
-        Tu información y actividad quedaron protegidas.
+        No tienes permisos suficientes para acceder a esta sección del sistema.
+        Contacta al administrador si consideras que esto es un error.
     </p>
 
-    <a href="{% url 'login' %}" class="btn-login">
-        Volver a iniciar sesión
+    <a href="{% url 'ventas_dashboard' %}" class="btn">
+        Volver al dashboard
     </a>
 
     <div class="footer">
-        Sistema de Gestión de Ventas y Clientes
+        Sistema CRM GestionVentas
     </div>
 
 </div>
