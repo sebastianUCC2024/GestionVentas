@@ -93,4 +93,33 @@ class Seguimiento(models.Model):
         verbose_name_plural = 'Seguimientos'
 
     def __str__(self):
-        return f'{self.get_tipo_contacto_display()} - {self.cliente.nombre}'
+        return f'{self.get_tipo_contacto_display()} - {self.cliente.nombre}' 
+    
+class Pedido(models.Model):
+    ESTADOS = [
+        ('pendiente', 'Pendiente'),
+        ('en_revision', 'En revisión'),
+        ('aprobado', 'Aprobado'),
+        ('rechazado', 'Rechazado'),
+    ]
+
+    cliente_usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='pedidos_realizados'
+    )
+
+    producto = models.CharField(max_length=150)
+    descripcion = models.TextField()
+    cantidad = models.PositiveIntegerField(default=1)
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default='pendiente'
+    )
+
+    fecha_pedido = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.producto} - {self.cliente_usuario.username}'

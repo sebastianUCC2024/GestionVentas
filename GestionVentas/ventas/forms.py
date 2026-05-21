@@ -1,5 +1,5 @@
 from django import forms
-from .models import OportunidadVenta, Seguimiento
+from .models import OportunidadVenta, Pedido, Seguimiento
 
 
 class OportunidadVentaForm(forms.ModelForm):
@@ -76,3 +76,26 @@ class SeguimientoForm(forms.ModelForm):
             }),
             'completado': forms.CheckboxInput(attrs={'class': 'checkbox-control'}),
         }
+class PedidoForm(forms.ModelForm):
+ class Meta:
+        model = Pedido
+        fields = ['producto', 'descripcion', 'cantidad']
+
+        widgets = {
+            'producto': forms.TextInput(attrs={
+                'placeholder': 'Ej: Página web, sistema, diseño, asesoría'
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'placeholder': 'Describe detalladamente lo que necesitas',
+                'rows': 5
+            }),
+            'cantidad': forms.NumberInput(attrs={
+                'min': 1
+            }),
+        }
+
+
+class PedidoEstadoForm(forms.ModelForm):
+    class Meta:
+        model = Pedido
+        fields = ['estado']
