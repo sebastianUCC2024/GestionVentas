@@ -253,4 +253,15 @@ Universidad Cooperativa de Colombia - 2024
 
 ---
 
+## GIT GRAPH
+### PRIMERA PARTE DEL GRAPH 
+<img width="926" height="554" alt="PRIMERA PARTE DEL GRAPH" src="https://github.com/user-attachments/assets/3191feca-58e4-4f3b-b81e-6c846dcd9322" />
+### SEGUNDA PARTE DEL GRAPH
+<img width="925" height="560" alt="SEGUNDA PARTE DEL GRAPH" src="https://github.com/user-attachments/assets/bb149e6c-72bb-4d0e-aed5-ec5db05b42f6" />
+### TERCERA PARTE DEL GRAPH 
+<img width="937" height="542" alt="TERCERA PARTE DEL GRAPH" src="https://github.com/user-attachments/assets/3f3e2b98-4101-444b-bdd9-dfbdfd1aadfa" />
+
+
+
+
 ⭐ **Desarrollado con Django y ❤️ por el equipo de GestionVentas**
